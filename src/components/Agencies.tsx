@@ -331,13 +331,32 @@ const Agencies: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div style={styles.container}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: 'calc(100vh - 200px)',
+        }}>
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div style={styles.errorContainer}>
-        <p style={styles.errorText}>{error}</p>
+      <div style={styles.container}>
+        <div style={{
+          maxWidth: '800px',
+          margin: '0 auto',
+          padding: '2rem',
+        }}>
+          <div style={styles.errorContainer}>
+            <p style={styles.errorText}>{error}</p>
+          </div>
+        </div>
       </div>
     );
   }
