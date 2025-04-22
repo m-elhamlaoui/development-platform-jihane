@@ -42,7 +42,6 @@ const styles = {
     position: 'relative',
   },
   backButton: {
-    display: 'inline-flex',
     alignItems: 'center',
     gap: '0.5rem',
     background: 'rgba(52, 152, 219, 0.6)',
@@ -55,6 +54,9 @@ const styles = {
     marginBottom: '2rem',
     fontSize: '1rem',
     fontWeight: '600',
+    maxWidth: '1200px',
+    margin: '0 auto 2rem auto',
+    display: 'block',
     '&:hover': {
       background: 'rgba(52, 152, 219, 0.8)',
       transform: 'translateY(-2px)'
