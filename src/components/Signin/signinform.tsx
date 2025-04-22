@@ -1,9 +1,18 @@
-
+import { useNavigate } from 'react-router-dom';
 
 const Signinform = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically handle authentication
+    // For now, we'll just navigate to the homepage
+    navigate('/homepage');
+  };
+
   return (
     <div className="absolute mt-30 ml-0 " >
-      <form  className=" bg-opacity-50 p-8 rounded-lg shadow-lg w-96 pt-0 w-full h-full ">
+      <form onSubmit={handleSubmit} className=" bg-opacity-50 p-8 rounded-lg shadow-lg w-96 pt-0 w-full h-full ">
           <h1 className="text-7xl text-white font-bold  mb-10 ">SIGN IN</h1>
           <p className="text-sm text-white font-bold mb-4 ">Sign in with your email address.</p>
         <div className="w-full ">
@@ -35,8 +44,6 @@ const Signinform = () => {
           className="w-100 p-3  bg-[#14022D] text-white font-bold rounded-2xl  mt-4 text-center">Google</button>
         </div>
       </form>
-      
-      
     </div>
   )
 }
