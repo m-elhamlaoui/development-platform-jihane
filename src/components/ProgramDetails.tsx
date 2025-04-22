@@ -19,10 +19,15 @@ interface Program {
 
 const styles = {
   container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '2rem',
-    color: 'white'
+    minHeight: '100vh',
+    padding: '20px',
+    paddingTop: '100px',
+    background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("/src/components/Assets/22.jpg")',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+    position: 'relative',
   },
   backButton: {
     display: 'inline-flex',
@@ -44,11 +49,13 @@ const styles = {
     }
   },
   detailsCard: {
-    background: 'rgba(44, 62, 80, 0.95)',
+    background: 'rgba(0, 0, 0, 0.7)',
     borderRadius: '16px',
     padding: '2.5rem',
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-    border: '1px solid rgba(255, 255, 255, 0.1)'
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    maxWidth: '1200px',
+    margin: '0 auto',
   },
   title: {
     fontSize: '2.5rem',
@@ -168,15 +175,20 @@ const ProgramDetails: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch(`https://ll.thespacedevs.com/2.2.0/program/${id}/`);
+        
+        // Using the free API endpoint instead of the rate-limited one
+        const response = await fetch(`https://lldev.thespacedevs.com/2.2.0/program/${id}/`);
+        
         if (!response.ok) {
-          throw new Error('Failed to fetch program details');
+          throw new Error(`API error: ${response.status}`);
         }
+        
         const data = await response.json();
+        console.log('Fetched program details:', data); // Debug log
         setProgram(data);
       } catch (err) {
-        setError('Failed to fetch program details. Please try again later.');
         console.error('Error fetching program details:', err);
+        setError('Failed to fetch program details. Please try again later.');
       } finally {
         setLoading(false);
       }
