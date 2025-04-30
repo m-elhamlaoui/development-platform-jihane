@@ -7,6 +7,8 @@ import Programs from './components/Programs';
 import Details from './components/Details';
 import LaunchDetails from './components/LaunchDetails';
 import ProgramDetails from './components/ProgramDetails';
+import Astronauts from './components/Astronauts';
+import AstronautDetails from './components/AstronautDetails';
 
 function App() {
   return (
@@ -35,6 +37,22 @@ function App() {
             <Header />
             <main className="main-content">
               <Programs />
+            </main>
+          </>
+        } />
+        <Route path="/astronauts" element={
+          <>
+            <Header />
+            <main className="main-content">
+              <Astronauts />
+            </main>
+          </>
+        } />
+        <Route path="/astronaut/:id" element={
+          <>
+            <Header />
+            <main className="main-content">
+              <AstronautDetails />
             </main>
           </>
         } />

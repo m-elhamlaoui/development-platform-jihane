@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import rocket from '../components/Assets/Logo.png';
 
 const styles = {
   header: {
@@ -20,21 +21,27 @@ const styles = {
   logo: {
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem',
+    gap: '0.5rem',
     textDecoration: 'none',
     color: 'white',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
     transition: 'all 0.3s ease',
     '&:hover': {
       transform: 'scale(1.05)',
-      color: '#3498db'
+      color: 'white'
     }
   },
   logoImage: {
-    width: '40px',
-    height: '40px',
+    width: '32px',
+    height: '32px',
     objectFit: 'contain'
+  },
+  logoText: {
+    fontFamily: 'Orbitron, sans-serif',
+    fontSize: '1.2rem',
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+    letterSpacing: '0.05em',
+    marginTop: '0.5rem'
   },
   nav: {
     display: 'flex',
@@ -97,8 +104,12 @@ const Header: React.FC = () => {
   return (
     <header style={styles.header}>
       <Link to="/" style={styles.logo}>
-      
-        <span>SpaceX News</span>
+        <img
+          src={rocket}
+          alt="Logo"
+          style={styles.logoImage}
+        />
+        <span style={styles.logoText}>BELONG EARTH</span>
       </Link>
       
       <nav style={styles.nav}>
@@ -128,6 +139,15 @@ const Header: React.FC = () => {
           }}
         >
           Agencies
+        </Link>
+        <Link 
+          to="/astronauts" 
+          style={{
+            ...styles.navLink,
+            ...(location.pathname === '/astronauts' ? styles.activeNavLink : {})
+          }}
+        >
+          Astronauts
         </Link>
       </nav>
 
