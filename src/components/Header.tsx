@@ -97,7 +97,6 @@ const Header: React.FC = () => {
   return (
     <header style={styles.header}>
       <Link to="/" style={styles.logo}>
-      
         <span>SpaceX News</span>
       </Link>
       
@@ -128,6 +127,15 @@ const Header: React.FC = () => {
           }}
         >
           Agencies
+        </Link>
+        <Link 
+          to="/astronauts" 
+          style={{
+            ...styles.navLink,
+            ...(location.pathname === '/astronauts' ? styles.activeNavLink : {})
+          }}
+        >
+          Astronauts
         </Link>
       </nav>
 
