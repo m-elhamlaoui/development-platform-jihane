@@ -1,8 +1,11 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Passwd from "./Passwd"
 
 
 const Signinform = () => {
+  const[email, setEmail] = React.useState("");
+  
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -10,6 +13,8 @@ const Signinform = () => {
     // Here you would typically handle authentication
     // For now, we'll just navigate to the homepage
     navigate('/homepage');
+    
+
   };
 
   return (
@@ -25,6 +30,8 @@ const Signinform = () => {
           <input type="email" 
           placeholder="Yourname@gmail.com"
           className=" focus:outline-none w-80 "
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           />
           </div>
           <br/>
@@ -33,7 +40,7 @@ const Signinform = () => {
          <Passwd/>
           
           
-        <br/>
+          <br/>
           <button
           type="submit" 
           className="w-100 p-3 h-13 text-white text-[20px] font-bold rounded-2xl bg-gradient-to-r from-[#492871] to-[#113B65] ">

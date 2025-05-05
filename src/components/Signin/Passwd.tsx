@@ -2,7 +2,8 @@ import React from 'react'
 import{ Eye, EyeOff } from 'lucide-react'
 function Passwd() {
     const [showPassword, setShowPassword] = React.useState(false);
-
+    
+    const [password, setPassword] = React.useState("");
 
 
     return (
@@ -14,6 +15,8 @@ function Passwd() {
             className='focus:outline-none  ' 
             type={showPassword ? "text":"password"}
             placeholder="Enter your password"
+            value={password}
+          onChange={(e) => setPassword(e.target.value)}
             />
             </div>
             <button

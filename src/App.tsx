@@ -1,5 +1,6 @@
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Signin from './pages/Signinpage'
+import Signup from './pages/Signuppage'
 import Header from './components/Header';
 import Homepage from './components/Homepage';
 import Agencies from './components/Agencies';
@@ -9,13 +10,14 @@ import LaunchDetails from './components/LaunchDetails';
 import ProgramDetails from './components/ProgramDetails';
 import Astronauts from './components/Astronauts';
 import AstronautDetails from './components/AstronautDetails';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/signin" replace />} />
-        <Route path="/signin" element={<Signin />} />
+        <Route path="/signin" element={<Signup/>} />
         <Route path="/homepage" element={
           <>
             <Header />
@@ -81,6 +83,7 @@ function App() {
           </>
         } />
       </Routes>
+      <ToastContainer />
     </Router>
   )
 }
