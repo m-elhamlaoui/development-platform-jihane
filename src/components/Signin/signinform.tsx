@@ -1,20 +1,37 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Passwd from "./Passwd"
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase'; // Import Firebase auth
+import { toast } from 'react-toastify';
+
+
 
 
 const Signinform = () => {
   const[email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+ 
+
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle authentication
-    // For now, we'll just navigate to the homepage
-    navigate('/homepage');
+    try{
+      await signInWithEmailAndPassword(auth, email,password);
+      console.log("User logged in successfully");
+      position:"top-center";
+      navigate('/homepage');
+    }catch (error) {
+      console.error("Error logging in:", error);
+      toast.error("Error logging in. Please check your credentials.");
+    }
     
 
+  };
+  const goToSignup = () => {
+    navigate('/signup');
   };
 
   return (
@@ -37,7 +54,7 @@ const Signinform = () => {
           <br/>
         
           
-         <Passwd/>
+          <Passwd password={password} setPassword={setPassword} />
           
           
           <br/>
@@ -48,7 +65,10 @@ const Signinform = () => {
           </button>
           <p className="text-sm text-white  mt-4 text-center ">
             Don't have an account? 
-            <a href="/signup" className="text-[#113B65] font-bold  "> Sign up</a>
+            <button
+              type="button"
+              onClick={goToSignup}
+              className="text-[#113B65] pl-2 font-bold  "> Sign up</button>
           </p>
           <hr className="mb-2 mt-2"style={{ color: '#727272' }} />
           <p className="text-sm text-[B6B6B6] ">
