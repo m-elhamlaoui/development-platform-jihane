@@ -1,9 +1,12 @@
 import React from 'react'
 import{ Eye, EyeOff } from 'lucide-react'
-function Passwd() {
+type PasswdProps = {
+  password: string;
+  setPassword: (value: string) => void;
+};
+
+const Passwd = ({ password, setPassword }: PasswdProps) => {
     const [showPassword, setShowPassword] = React.useState(false);
-    
-    const [password, setPassword] = React.useState("");
 
 
     return (

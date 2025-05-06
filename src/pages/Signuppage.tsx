@@ -1,15 +1,79 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import{ Eye, EyeOff } from 'lucide-react'
+import { auth,db } from '../components/firebase'; // Import Firebase auth
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import{setDoc, doc} from 'firebase/firestore'
 
 import rocket from "../components/Assets/Logo.png";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const Signup = () =>  {
-    const [showPassword1, setShowPassword1] = React.useState(false);
-    const [password1, setPassword1] = React.useState("");
-    const [showPassword2, setShowPassword2] = React.useState(false);
-    
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
     const [password2, setPassword2] = React.useState("");
+
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword2, setShowPassword2] = React.useState(false);
+    interface RegisterEvent extends React.FormEvent<HTMLFormElement> {}
+    const handleRegister = async (e: RegisterEvent): Promise<void> => {
+        e.preventDefault();
+    
+        // ✅ Regex validations
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+    
+        if (!emailRegex.test(email)) {
+            console.log('Email must be a valid @gmail.com address.');
+            
+            return;
+        }
+    
+        if (!passwordRegex.test(password)) {
+            console.log(
+                'Password must be at least 8 characters long and include at least one letter, one number, and one special character.'
+            );
+            toast.error("Password must be at least 8 characters long and include at least one letter, one number, and one special character.");
+            return;
+        }
+    
+        if (password !== password2) {
+            console.log('Passwords do not match.');
+            toast.error("Passwords do not match.");
+           
+            return;
+        }
+    
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            const user = auth.currentUser;
+            console.log(user);
+            if(user){
+                await setDoc(doc(db, "Users", user.uid),{
+                    email:user.email,
+                    password:password,
+                    password2:password2,
+                });
+            }
+                console.log("User registered successfully!");
+                toast.success("User registered successfully!");
+            }catch (error) {
+            if (error instanceof Error) {
+                console.log('Registration error:', error.message);
+                toast.error(error.message,{
+                    position: "bottom-center",
+                    
+                });
+
+            } else {
+                console.log('An unknown error occurred.');
+            }
+        }
+    };
+    
+
+
     return (
         <div className="bg-gradient-to-r from-[#0F0320] to-[#0C0417] min-h-screen w-full">
             <div className="absolute top-0 left-0 m-4  flex flex-row items-start">
@@ -23,7 +87,7 @@ const Signup = () =>  {
                 </h1>
             </div>
             <div className="absolute mt-50 ml-180 w-110 h-150 " >
-                <form className=" p-8 border border-[#434141]   w-96 pt-0 w-full h-full justify-center w-full h-full">
+                <form className=" p-8 border border-[#434141]   w-96 pt-0 w-full h-full justify-center w-full h-full" onSubmit={handleRegister}>
                     <h1 className="text-7xl text-white font-bold mt-5 ml-10  ">SIGN up</h1>            
                     <div className="w-full ">
 
@@ -32,6 +96,8 @@ const Signup = () =>  {
                             <input type="email" 
                                 placeholder="Yourname@gmail.com"
                                 className=" focus:outline-none w-80 "
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                                 
                             />
                         </div>
@@ -41,18 +107,18 @@ const Signup = () =>  {
                                 </label>
                                 <input
                                     className='focus:outline-none  ' 
-                                    type={showPassword1 ? "text":"password"}
+                                    type={showPassword ? "text":"password"}
                                     placeholder="Enter your password"
-                                    value={password1}
-                                    onChange={(e) => setPassword1(e.target.value)}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
                                 />
                              </div>
                                 <button
                                     className='ml-0 p-0'
                                     type="button"
-                                    onClick={() => setShowPassword1(prev => !prev)}
+                                    onClick={() => setShowPassword(prev => !prev)}
                                 >
-                                    {showPassword1 ? <Eye className="w-5 h-5 text-gray-500" /> : <EyeOff className="w-5 h-5 text-gray-500" />}
+                                    {showPassword ? <Eye className="w-5 h-5 text-gray-500" /> : <EyeOff className="w-5 h-5 text-gray-500" />}
                                 </button>
                         
                         </div>
@@ -66,6 +132,7 @@ const Signup = () =>  {
                                     placeholder="Confirm your password"
                                     value={password2}
                                     onChange={(e) => setPassword2(e.target.value)}
+                                    required
                                 />
                              </div>
                                 <button
@@ -99,4 +166,5 @@ const Signup = () =>  {
     
   )
 }
+
 export default Signup
