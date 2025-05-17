@@ -11,6 +11,7 @@ import ProgramDetails from './components/ProgramDetails';
 import Astronauts from './components/Astronauts';
 import AstronautDetails from './components/AstronautDetails';
 import { ToastContainer } from 'react-toastify';
+import Profilepage from './pages/Profilepage';
 
 function App() {
   return (
@@ -80,6 +81,14 @@ function App() {
             <Header />
             <main className="main-content">
               <ProgramDetails />
+            </main>
+          </>
+        } />
+        <Route path="/profile" element={
+          <>
+            <Header />
+            <main className="main-content">
+              <Profilepage />
             </main>
           </>
         } />

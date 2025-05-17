@@ -151,7 +151,10 @@ const Header: React.FC = () => {
         </Link>
       </nav>
 
-      <button style={styles.profileButton}>
+      <Link 
+        to="/profile"
+        style={styles.profileButton}
+      >
         <svg 
           style={styles.profileIcon}
           xmlns="http://www.w3.org/2000/svg" 
@@ -166,7 +169,7 @@ const Header: React.FC = () => {
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
         Profile
-      </button>
+      </Link>
     </header>
   );
 };

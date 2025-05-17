@@ -18,31 +18,35 @@ const Signinform = () => {
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     try{
+      console.log('Attempting to login with:', { email });
       const response = await fetch('http://localhost:8080/api/login', {  
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ email, password })
       });
 
-      if (!response.ok) {
-        // If response status not 2xx, throw error to be caught below
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Login failed');
-      }
-
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
 
       // Save token (e.g., localStorage or context)
       localStorage.setItem('token', data.token);
+      localStorage.setItem('email', email);
 
       toast.success("User logged in successfully");
 
       // Redirect to homepage or protected route
       navigate('/homepage');
     } catch (error: any) {
-      console.error("Error logging in:", error.message);
+      console.error("Error logging in:", error);
       toast.error(`Login failed: ${error.message}`);
     }
   };
