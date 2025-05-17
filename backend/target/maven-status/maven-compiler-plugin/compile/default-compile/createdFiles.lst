@@ -1,2 +1,2 @@
-com/codewithme/backend/Controller/SpaceDataController.class
-com/codewithme/backend/service/SpaceDataService.class
+com\codewithme\backend\service\SpaceDataService.class
+com\codewithme\backend\Controller\SpaceDataController.class
