@@ -5,25 +5,34 @@ import LoadingSpinner from './LoadingSpinner';
 interface Astronaut {
   id: number;
   name: string;
-  status: {
+  status?: {
     name: string;
   };
-  agency: {
+  agency?: {
     name: string;
     abbrev: string;
   };
   image?: {
-    image_url: string;
+    image_url?: string;
   } | null;
   profile_image?: string | null;
   profile_image_thumbnail?: string | null;
-  nationality: Array<{
+  wiki?: string | null;
+  bio?: string;
+  nationality?: Array<{
     name: string;
   }>;
-  bio: string;
-  time_in_space: string;
-  flights_count: number;
-  spacewalks_count: number;
+  date_of_birth?: string;
+  twitter?: string;
+  instagram?: string;
+  flights_count?: number;
+  spacewalks_count?: number;
+  time_in_space?: string;
+  // Added fields based on Space API 2.2.0
+  url?: string;
+  profile_image_url?: string;
+  profile_image_thumbnail_url?: string;
+  date_of_death?: string | null;
 }
 
 const styles = {
@@ -208,15 +217,139 @@ const styles = {
 
 // Helper function to get the astronaut image URL
 const getAstronautImageUrl = (astronaut: Astronaut): string | null => {
+  // Debug the astronaut object to see all properties
+  console.log('Astronaut object:', JSON.stringify(astronaut, null, 2));
+
   // Try all possible image URL structures
   if (astronaut.profile_image) {
     return astronaut.profile_image;
   } else if (astronaut.profile_image_thumbnail) {
     return astronaut.profile_image_thumbnail;
+  } else if ((astronaut as any).profile_image_url) {
+    return (astronaut as any).profile_image_url;
+  } else if ((astronaut as any).profile_image_thumbnail_url) {
+    return (astronaut as any).profile_image_thumbnail_url;
+  } else if ((astronaut as any).profile_img) {
+    return (astronaut as any).profile_img;
+  } else if ((astronaut as any).profile_img_url) {
+    return (astronaut as any).profile_img_url;
+  } else if ((astronaut as any).thumbnail) {
+    return (astronaut as any).thumbnail;
+  } else if ((astronaut as any).thumbnail_url) {
+    return (astronaut as any).thumbnail_url;
+  } else if ((astronaut as any).image_url) {
+    return (astronaut as any).image_url;
   } else if (astronaut.image && astronaut.image.image_url) {
     return astronaut.image.image_url;
   }
   return null;
+};
+
+// Helper component to display astronaut details
+const AstronautCard = ({ astronaut }: { astronaut: Astronaut }) => {
+  const navigate = useNavigate();
+  const [showDebug, setShowDebug] = useState(false);
+
+  // Look for image in any of the common locations
+  const astronautImage = getAstronautImageUrl(astronaut);
+
+  return (
+    <div
+      style={styles.astronautCard}
+      onClick={() => navigate(`/astronaut/${astronaut.id}`)}
+    >
+      <div style={styles.imageContainer}>
+        {astronautImage ? (
+          <img
+            src={astronautImage}
+            alt={astronaut.name}
+            style={styles.image}
+            onError={(e) => {
+              console.error(`Image failed to load: ${astronautImage}`);
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+        ) : (
+          <div style={styles.placeholderImage}>
+            <span style={styles.placeholderText}>No Image Available</span>
+          </div>
+        )}
+      </div>
+      <div style={styles.content}>
+        <h2 style={styles.name}>{astronaut.name}</h2>
+        {astronaut.status && (
+          <span style={styles.status}>{astronaut.status.name}</span>
+        )}
+        <div style={styles.info}>
+          {astronaut.agency && (
+            <p style={styles.infoItem}>
+              <span style={styles.infoLabel}>Agency:</span>
+              {astronaut.agency.name}
+            </p>
+          )}
+          {astronaut.nationality && astronaut.nationality[0] && (
+            <p style={styles.infoItem}>
+              <span style={styles.infoLabel}>Nationality:</span>
+              {astronaut.nationality[0]?.name}
+            </p>
+          )}
+        </div>
+        <button
+          style={{
+            background: 'rgba(52, 152, 219, 0.3)',
+            border: 'none',
+            padding: '5px 10px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            color: 'white',
+            marginBottom: '10px'
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDebug(!showDebug);
+          }}
+        >
+          {showDebug ? 'Hide Debug Info' : 'Show Debug Info'}
+        </button>
+        
+        {showDebug && (
+          <div style={{ 
+            background: 'rgba(0,0,0,0.7)', 
+            padding: '10px', 
+            borderRadius: '4px',
+            fontSize: '0.8rem',
+            maxHeight: '200px',
+            overflow: 'auto',
+            marginBottom: '10px'
+          }}>
+            <pre style={{ color: '#ddd', whiteSpace: 'pre-wrap' }}>
+              {JSON.stringify({
+                id: astronaut.id,
+                name: astronaut.name,
+                image: astronaut.image,
+                profile_image: astronaut.profile_image,
+                profile_image_thumbnail: astronaut.profile_image_thumbnail,
+                // Check other properties
+                profileImageUrl: (astronaut as any).profile_image_url,
+                imageUrl: (astronaut as any).image_url,
+                foundImage: astronautImage
+              }, null, 2)}
+            </pre>
+          </div>
+        )}
+        
+        <button
+          style={styles.viewButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/astronaut/${astronaut.id}`);
+          }}
+        >
+          View Details
+        </button>
+      </div>
+    </div>
+  );
 };
 
 const Astronauts: React.FC = () => {
@@ -231,28 +364,33 @@ const Astronauts: React.FC = () => {
         setLoading(true);
         setError(null);
         
+        console.log('Fetching astronauts from API...');
         const response = await fetch('http://localhost:8080/api/space/astronauts?limit=20', {
           credentials: 'include'
         });
+        
+        console.log('Astronauts API response status:', response.status);
         
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Full astronauts API response:', data);
-        console.log('Astronauts results array:', data.results);
+        console.log('Full astronauts API response structure:', Object.keys(data));
+        console.log('Astronauts results array exists:', !!data.results);
+        console.log('Astronauts results array length:', data.results?.length);
         
-        // Log the structure of the first astronaut if available
-        if (data.results && data.results.length > 0) {
-          console.log('First astronaut structure:', JSON.stringify(data.results[0], null, 2));
-          console.log('Image URL property:', data.results[0].profile_image || data.results[0].profile_image_thumbnail || data.results[0].image?.image_url);
+        // If there's no results array, log the full data to see structure
+        if (!data.results) {
+          console.log('Raw API response data:', JSON.stringify(data, null, 2));
         }
         
         if (!data.results || data.results.length === 0) {
           setError('No astronauts data available. Please try again later.');
           return;
         }
+        
+        console.log('First astronaut keys:', Object.keys(data.results[0]));
         
         setAstronauts(data.results);
       } catch (err) {
@@ -303,65 +441,7 @@ const Astronauts: React.FC = () => {
       <div style={styles.astronautsContainer}>
         {astronauts && astronauts.length > 0 ? (
           astronauts.map((astronaut) => (
-            <div
-              key={astronaut.id}
-              style={styles.astronautCard}
-              onClick={() => navigate(`/astronaut/${astronaut.id}`)}
-            >
-              <div style={styles.imageContainer}>
-                {getAstronautImageUrl(astronaut) ? (
-                  <img
-                    src={getAstronautImageUrl(astronaut) || ''}
-                    alt={astronaut.name}
-                    style={styles.image}
-                  />
-                ) : (
-                  <div style={styles.placeholderImage}>
-                    <span style={styles.placeholderText}>No Image Available</span>
-                  </div>
-                )}
-              </div>
-              <div style={styles.content}>
-                <h2 style={styles.name}>{astronaut.name}</h2>
-                <span style={styles.status}>{astronaut.status.name}</span>
-                <div style={styles.info}>
-                  <p style={styles.infoItem}>
-                    <span style={styles.infoLabel}>Agency:</span>
-                    {astronaut.agency.name}
-                  </p>
-                  <p style={styles.infoItem}>
-                    <span style={styles.infoLabel}>Nationality:</span>
-                    {astronaut.nationality[0]?.name}
-                  </p>
-                </div>
-                <p style={styles.bio}>
-                  {astronaut.bio}
-                </p>
-                <div style={styles.stats}>
-                  <div style={styles.statItem}>
-                    <span style={styles.statValue}>{astronaut.flights_count}</span>
-                    <span style={styles.statLabel}>Flights</span>
-                  </div>
-                  <div style={styles.statItem}>
-                    <span style={styles.statValue}>{astronaut.spacewalks_count}</span>
-                    <span style={styles.statLabel}>Spacewalks</span>
-                  </div>
-                  <div style={styles.statItem}>
-                    <span style={styles.statValue}>{astronaut.time_in_space}</span>
-                    <span style={styles.statLabel}>Time in Space</span>
-                  </div>
-                </div>
-                <button
-                  style={styles.viewButton}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/astronaut/${astronaut.id}`);
-                  }}
-                >
-                  View Details
-                </button>
-              </div>
-            </div>
+            <AstronautCard key={astronaut.id} astronaut={astronaut} />
           ))
         ) : (
           <div style={styles.errorContainer}>

@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class SpaceDataService {
     private static final Logger logger = LoggerFactory.getLogger(SpaceDataService.class);
@@ -54,7 +57,32 @@ public class SpaceDataService {
             logger.info("Fetching astronauts from URL: {}", url);
             ResponseEntity<Object> response = restTemplate.getForEntity(url, Object.class);
             logger.info("Astronauts API response status: {}", response.getStatusCode());
-            return response.getBody();
+            
+            // Log the full response body for debugging
+            Object responseBody = response.getBody();
+            if (responseBody != null) {
+                logger.info("Astronauts API response body structure: {}", responseBody.getClass().getName());
+                // Log the first item if it's a map with results
+                try {
+                    if (responseBody instanceof Map) {
+                        Map<String, Object> responseMap = (Map<String, Object>) responseBody;
+                        logger.info("Astronauts API response keys: {}", responseMap.keySet());
+                        
+                        if (responseMap.containsKey("results") && responseMap.get("results") instanceof List) {
+                            List<Object> results = (List<Object>) responseMap.get("results");
+                            if (!results.isEmpty()) {
+                                Object firstItem = results.get(0);
+                                logger.info("First astronaut object keys: {}", 
+                                    firstItem instanceof Map ? ((Map<String, Object>) firstItem).keySet() : "Not a map");
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("Error analyzing astronaut response", e);
+                }
+            }
+            
+            return responseBody;
         } catch (Exception e) {
             logger.error("Error fetching astronauts: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to fetch astronauts data: " + e.getMessage());
