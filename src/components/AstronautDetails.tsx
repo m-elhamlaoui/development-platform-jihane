@@ -12,9 +12,11 @@ interface Astronaut {
     name: string;
     abbrev: string;
   };
-  image: {
+  image?: {
     image_url: string;
   } | null;
+  profile_image?: string | null;
+  profile_image_thumbnail?: string | null;
   nationality: Array<{
     name: string;
   }>;
@@ -183,14 +185,22 @@ const AstronautDetails: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`https://lldev.thespacedevs.com/2.3.0/astronauts/${id}/?format=json`);
+        const response = await fetch(`http://localhost:8080/api/space/astronauts/${id}`, {
+          credentials: 'include'
+        });
         
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Fetched astronaut details:', data);
+        console.log('Full astronaut details response:', data);
+        console.log('Astronaut image properties:', {
+          profileImage: data.profile_image,
+          profileImageThumbnail: data.profile_image_thumbnail,
+          imageUrl: data.image?.image_url
+        });
+        
         setAstronaut(data);
       } catch (err) {
         console.error('Error fetching astronaut details:', err);
@@ -264,6 +274,21 @@ const AstronautDetails: React.FC = () => {
     );
   }
 
+  // Helper function to get the astronaut image URL
+  const getAstronautImageUrl = (astronaut: Astronaut | null): string | null => {
+    if (!astronaut) return null;
+    
+    // Try all possible image URL structures
+    if (astronaut.profile_image) {
+      return astronaut.profile_image;
+    } else if (astronaut.profile_image_thumbnail) {
+      return astronaut.profile_image_thumbnail;
+    } else if (astronaut.image && astronaut.image.image_url) {
+      return astronaut.image.image_url;
+    }
+    return null;
+  };
+
   return (
     <div style={styles.container}>
       <button 
@@ -275,9 +300,9 @@ const AstronautDetails: React.FC = () => {
       <div style={styles.detailsCard}>
         <h1 style={styles.title}>{astronaut.name}</h1>
         <div style={styles.imageContainer}>
-          {astronaut.image?.image_url ? (
+          {getAstronautImageUrl(astronaut) ? (
             <img 
-              src={astronaut.image.image_url} 
+              src={getAstronautImageUrl(astronaut) || ''} 
               alt={astronaut.name} 
               style={styles.image}
             />

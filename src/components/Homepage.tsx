@@ -354,26 +354,16 @@ const Homepage: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Using the free API endpoint instead of the rate-limited one
-        let url = 'https://lldev.thespacedevs.com/2.2.0/launch/';
+        const response = await fetch(`http://localhost:8080/api/space/launches?type=${activeTab}&limit=20`, {
+          credentials: 'include'
+        });
         
-        if (activeTab === 'upcoming') {
-          url += 'upcoming/?limit=20';
-        } else if (activeTab === 'previous') {
-          url += 'previous/?limit=20';
-        } else if (activeTab === 'live') {
-          url += '?format=json&limit=20';
-        }
-        
-        console.log('Fetching from URL:', url); // Debug log
-        
-        const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Fetched launches:', data.results); // Debug log
+        console.log('Fetched launches:', data.results);
         
         if (!data.results || data.results.length === 0) {
           setError('No launch data available. Please try again later.');

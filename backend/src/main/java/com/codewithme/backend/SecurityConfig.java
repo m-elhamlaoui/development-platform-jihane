@@ -33,13 +33,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/signup", "/api/login", "/api/test-cors").permitAll()
+                        .requestMatchers("/api/space/**").permitAll()  // Allow all space API endpoints
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
-
-
-
 
         return http.build();
     }

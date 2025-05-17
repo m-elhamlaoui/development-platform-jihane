@@ -303,15 +303,16 @@ const Agencies: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Using the free API endpoint instead of the rate-limited one
-        const response = await fetch('https://lldev.thespacedevs.com/2.2.0/agencies/?limit=20');
+        const response = await fetch('http://localhost:8080/api/space/agencies?limit=20', {
+          credentials: 'include'
+        });
         
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Fetched agencies:', data.results); // Debug log
+        console.log('Fetched agencies:', data.results);
         
         if (!data.results || data.results.length === 0) {
           setError('No agencies data available. Please try again later.');

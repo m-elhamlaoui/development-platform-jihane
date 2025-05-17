@@ -152,21 +152,31 @@ const Programs: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Using the free API endpoint instead of the rate-limited one
-        const response = await fetch('https://lldev.thespacedevs.com/2.2.0/program/?limit=20');
+        const url = 'http://localhost:8080/api/space/programs?limit=20';
+        console.log('Fetching programs from URL:', url);
+        
+        const response = await fetch(url, {
+          credentials: 'include'
+        });
+        
+        console.log('Programs API response status:', response.status);
         
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+          const errorText = await response.text();
+          console.error('API error response:', errorText);
+          throw new Error(`API error: ${response.status} - ${errorText}`);
         }
         
         const data = await response.json();
-        console.log('Fetched programs:', data.results); // Debug log
+        console.log('Programs API full response:', data);
         
         if (!data.results || data.results.length === 0) {
+          console.warn('No programs data available in response');
           setError('No programs data available. Please try again later.');
           return;
         }
         
+        console.log('Setting programs data:', data.results);
         setPrograms(data.results);
       } catch (err) {
         console.error('Error fetching programs:', err);

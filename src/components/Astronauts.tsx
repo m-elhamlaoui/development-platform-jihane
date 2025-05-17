@@ -12,9 +12,11 @@ interface Astronaut {
     name: string;
     abbrev: string;
   };
-  image: {
+  image?: {
     image_url: string;
   } | null;
+  profile_image?: string | null;
+  profile_image_thumbnail?: string | null;
   nationality: Array<{
     name: string;
   }>;
@@ -204,6 +206,19 @@ const styles = {
   },
 } as const;
 
+// Helper function to get the astronaut image URL
+const getAstronautImageUrl = (astronaut: Astronaut): string | null => {
+  // Try all possible image URL structures
+  if (astronaut.profile_image) {
+    return astronaut.profile_image;
+  } else if (astronaut.profile_image_thumbnail) {
+    return astronaut.profile_image_thumbnail;
+  } else if (astronaut.image && astronaut.image.image_url) {
+    return astronaut.image.image_url;
+  }
+  return null;
+};
+
 const Astronauts: React.FC = () => {
   const [astronauts, setAstronauts] = useState<Astronaut[]>([]);
   const [loading, setLoading] = useState(true);
@@ -216,14 +231,23 @@ const Astronauts: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('https://lldev.thespacedevs.com/2.3.0/astronauts/?format=json');
+        const response = await fetch('http://localhost:8080/api/space/astronauts?limit=20', {
+          credentials: 'include'
+        });
         
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Fetched astronauts:', data.results);
+        console.log('Full astronauts API response:', data);
+        console.log('Astronauts results array:', data.results);
+        
+        // Log the structure of the first astronaut if available
+        if (data.results && data.results.length > 0) {
+          console.log('First astronaut structure:', JSON.stringify(data.results[0], null, 2));
+          console.log('Image URL property:', data.results[0].profile_image || data.results[0].profile_image_thumbnail || data.results[0].image?.image_url);
+        }
         
         if (!data.results || data.results.length === 0) {
           setError('No astronauts data available. Please try again later.');
@@ -285,9 +309,9 @@ const Astronauts: React.FC = () => {
               onClick={() => navigate(`/astronaut/${astronaut.id}`)}
             >
               <div style={styles.imageContainer}>
-                {astronaut.image?.image_url ? (
+                {getAstronautImageUrl(astronaut) ? (
                   <img
-                    src={astronaut.image.image_url}
+                    src={getAstronautImageUrl(astronaut) || ''}
                     alt={astronaut.name}
                     style={styles.image}
                   />
