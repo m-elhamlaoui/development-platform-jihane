@@ -114,10 +114,10 @@ const Header: React.FC = () => {
       
       <nav style={styles.nav}>
         <Link 
-          to="/homepage" 
+          to="/home" 
           style={{
             ...styles.navLink,
-            ...(location.pathname === '/homepage' ? styles.activeNavLink : {})
+            ...(location.pathname === '/home' ? styles.activeNavLink : {})
           }}
         >
           Home
