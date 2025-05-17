@@ -5,39 +5,43 @@ import LoadingSpinner from './LoadingSpinner';
 interface Astronaut {
   id: number;
   name: string;
-  status: {
+  status?: {
     name: string;
   };
-  agency: {
+  agency?: {
     name: string;
     abbrev: string;
   };
   image?: {
-    image_url: string;
+    image_url?: string;
   } | null;
   profile_image?: string | null;
   profile_image_thumbnail?: string | null;
-  nationality: Array<{
+  nationality?: Array<{
     name: string;
   }>;
-  bio: string;
-  time_in_space: string;
-  eva_time: string;
-  age: number;
-  date_of_birth: string;
-  date_of_death: string | null;
-  wiki: string | null;
-  last_flight: string;
-  first_flight: string;
-  social_media_links: Array<{
+  bio?: string;
+  time_in_space?: string;
+  eva_time?: string;
+  age?: number;
+  date_of_birth?: string;
+  date_of_death?: string | null;
+  wiki?: string | null;
+  last_flight?: string;
+  first_flight?: string;
+  social_media_links?: Array<{
     url: string;
     social_media: {
       name: string;
     };
   }>;
-  flights_count: number;
-  landings_count: number;
-  spacewalks_count: number;
+  flights_count?: number;
+  landings_count?: number;
+  spacewalks_count?: number;
+  // Added fields based on Space API 2.2.0
+  url?: string;
+  profile_image_url?: string;
+  profile_image_thumbnail_url?: string;
 }
 
 const styles = {
@@ -185,21 +189,24 @@ const AstronautDetails: React.FC = () => {
         setLoading(true);
         setError(null);
         
+        console.log('Fetching astronaut details for ID:', id);
         const response = await fetch(`http://localhost:8080/api/space/astronauts/${id}`, {
           credentials: 'include'
         });
         
+        console.log('Astronaut details API response status:', response.status);
+        
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+          const errorText = await response.text();
+          console.error('API error response:', errorText);
+          throw new Error(`API error: ${response.status} - ${errorText}`);
         }
         
         const data = await response.json();
-        console.log('Full astronaut details response:', data);
-        console.log('Astronaut image properties:', {
-          profileImage: data.profile_image,
-          profileImageThumbnail: data.profile_image_thumbnail,
-          imageUrl: data.image?.image_url
-        });
+        console.log('Full astronaut details response structure:', Object.keys(data));
+        
+        // For detailed debugging
+        console.log('Raw astronaut details data:', JSON.stringify(data, null, 2));
         
         setAstronaut(data);
       } catch (err) {
@@ -278,11 +285,28 @@ const AstronautDetails: React.FC = () => {
   const getAstronautImageUrl = (astronaut: Astronaut | null): string | null => {
     if (!astronaut) return null;
     
+    // Debug the astronaut object to see all properties
+    console.log('Astronaut details object:', JSON.stringify(astronaut, null, 2));
+    
     // Try all possible image URL structures
     if (astronaut.profile_image) {
       return astronaut.profile_image;
     } else if (astronaut.profile_image_thumbnail) {
       return astronaut.profile_image_thumbnail;
+    } else if ((astronaut as any).profile_image_url) {
+      return (astronaut as any).profile_image_url;
+    } else if ((astronaut as any).profile_image_thumbnail_url) {
+      return (astronaut as any).profile_image_thumbnail_url;
+    } else if ((astronaut as any).profile_img) {
+      return (astronaut as any).profile_img;
+    } else if ((astronaut as any).profile_img_url) {
+      return (astronaut as any).profile_img_url;
+    } else if ((astronaut as any).thumbnail) {
+      return (astronaut as any).thumbnail;
+    } else if ((astronaut as any).thumbnail_url) {
+      return (astronaut as any).thumbnail_url;
+    } else if ((astronaut as any).image_url) {
+      return (astronaut as any).image_url;
     } else if (astronaut.image && astronaut.image.image_url) {
       return astronaut.image.image_url;
     }
@@ -314,19 +338,19 @@ const AstronautDetails: React.FC = () => {
         </div>
         <div style={styles.content}>
           <p style={styles.infoItem}>
-            <strong>Status:</strong> {astronaut.status.name}
+            <strong>Status:</strong> {astronaut.status?.name}
           </p>
           <p style={styles.infoItem}>
-            <strong>Agency:</strong> {astronaut.agency.name} ({astronaut.agency.abbrev})
+            <strong>Agency:</strong> {astronaut.agency?.name} ({astronaut.agency?.abbrev})
           </p>
           <p style={styles.infoItem}>
-            <strong>Nationality:</strong> {astronaut.nationality[0]?.name}
+            <strong>Nationality:</strong> {astronaut.nationality?.[0]?.name}
           </p>
           <p style={styles.infoItem}>
             <strong>Age:</strong> {astronaut.age}
           </p>
           <p style={styles.infoItem}>
-            <strong>Date of Birth:</strong> {new Date(astronaut.date_of_birth).toLocaleDateString()}
+            <strong>Date of Birth:</strong> {new Date(astronaut.date_of_birth || '').toLocaleDateString()}
           </p>
           {astronaut.date_of_death && (
             <p style={styles.infoItem}>
@@ -349,10 +373,10 @@ const AstronautDetails: React.FC = () => {
             <strong>Spacewalks:</strong> {astronaut.spacewalks_count}
           </p>
           <p style={styles.infoItem}>
-            <strong>First Flight:</strong> {new Date(astronaut.first_flight).toLocaleDateString()}
+            <strong>First Flight:</strong> {new Date(astronaut.first_flight || '').toLocaleDateString()}
           </p>
           <p style={styles.infoItem}>
-            <strong>Last Flight:</strong> {new Date(astronaut.last_flight).toLocaleDateString()}
+            <strong>Last Flight:</strong> {new Date(astronaut.last_flight || '').toLocaleDateString()}
           </p>
           <p style={styles.bio}>
             {astronaut.bio}
@@ -368,7 +392,7 @@ const AstronautDetails: React.FC = () => {
                 Wikipedia
               </a>
             )}
-            {astronaut.social_media_links.map((link, index) => (
+            {astronaut.social_media_links?.map((link, index) => (
               <a 
                 key={index}
                 href={link.url} 
