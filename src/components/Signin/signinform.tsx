@@ -1,8 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Passwd from "./Passwd"
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase'; // Import Firebase auth
+
 import { toast } from 'react-toastify';
 
 
@@ -19,16 +18,33 @@ const Signinform = () => {
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     try{
-      await signInWithEmailAndPassword(auth, email,password);
-      console.log("User logged in successfully");
-      position:"top-center";
-      navigate('/homepage');
-    }catch (error) {
-      console.error("Error logging in:", error);
-      toast.error("Error logging in. Please check your credentials.");
-    }
-    
+      const response = await fetch('http://localhost:8080/api/login', {  
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
 
+      if (!response.ok) {
+        // If response status not 2xx, throw error to be caught below
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login failed');
+      }
+
+      const data = await response.json();
+
+      // Save token (e.g., localStorage or context)
+      localStorage.setItem('token', data.token);
+
+      toast.success("User logged in successfully");
+
+      // Redirect to homepage or protected route
+      navigate('/homepage');
+    } catch (error: any) {
+      console.error("Error logging in:", error.message);
+      toast.error(`Login failed: ${error.message}`);
+    }
   };
   const goToSignup = () => {
     navigate('/signup');
