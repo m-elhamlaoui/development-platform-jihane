@@ -80,7 +80,7 @@ const Landingpage = () => {
         </section>
 
         {/* Stats Section */}
-        <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-black/30">
+        <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 ">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div className="p-6">
@@ -88,11 +88,11 @@ const Landingpage = () => {
                 <div className="text-gray-300">Active Astronauts</div>
               </div>
               <div className="p-6">
-                <div className="text-4xl font-bold text-purple-400 mb-2">100+</div>
+                <div className="text-4xl font-bold text-purple-400 mb-2">50+</div>
                 <div className="text-gray-300">Space Agencies</div>
               </div>
               <div className="p-6">
-                <div className="text-4xl font-bold text-purple-400 mb-2">1000+</div>
+                <div className="text-4xl font-bold text-purple-400 mb-2">100+</div>
                 <div className="text-gray-300">Launch Updates</div>
               </div>
               <div className="p-6">
