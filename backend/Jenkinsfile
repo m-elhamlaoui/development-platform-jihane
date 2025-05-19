@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   environment {
-    DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds') // ID des identifiants DockerHub
     IMAGE_NAME = "charafedd20/backend-app"
   }
 
@@ -24,7 +23,12 @@ pipeline {
     stage('Build Docker image') {
       steps {
         dir('backend') {
-          sh 'docker build -t $IMAGE_NAME .'
+          withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sh '''
+              echo $PASSWORD | docker login -u $USERNAME --password-stdin
+              docker build -t $IMAGE_NAME .
+            '''
+          }
         }
       }
     }
