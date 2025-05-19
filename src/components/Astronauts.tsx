@@ -248,7 +248,7 @@ const getAstronautImageUrl = (astronaut: Astronaut): string | null => {
 // Helper component to display astronaut details
 const AstronautCard = ({ astronaut }: { astronaut: Astronaut }) => {
   const navigate = useNavigate();
-  const [showDebug, setShowDebug] = useState(false);
+  
 
   // Look for image in any of the common locations
   const astronautImage = getAstronautImageUrl(astronaut);
@@ -294,50 +294,9 @@ const AstronautCard = ({ astronaut }: { astronaut: Astronaut }) => {
             </p>
           )}
         </div>
-        <button
-          style={{
-            background: 'rgba(52, 152, 219, 0.3)',
-            border: 'none',
-            padding: '5px 10px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            color: 'white',
-            marginBottom: '10px'
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowDebug(!showDebug);
-          }}
-        >
-          {showDebug ? 'Hide Debug Info' : 'Show Debug Info'}
-        </button>
+      
         
-        {showDebug && (
-          <div style={{ 
-            background: 'rgba(0,0,0,0.7)', 
-            padding: '10px', 
-            borderRadius: '4px',
-            fontSize: '0.8rem',
-            maxHeight: '200px',
-            overflow: 'auto',
-            marginBottom: '10px'
-          }}>
-            <pre style={{ color: '#ddd', whiteSpace: 'pre-wrap' }}>
-              {JSON.stringify({
-                id: astronaut.id,
-                name: astronaut.name,
-                image: astronaut.image,
-                profile_image: astronaut.profile_image,
-                profile_image_thumbnail: astronaut.profile_image_thumbnail,
-                // Check other properties
-                profileImageUrl: (astronaut as any).profile_image_url,
-                imageUrl: (astronaut as any).image_url,
-                foundImage: astronautImage
-              }, null, 2)}
-            </pre>
-          </div>
-        )}
-        
+  
         <button
           style={styles.viewButton}
           onClick={(e) => {
