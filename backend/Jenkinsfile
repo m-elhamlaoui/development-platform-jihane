@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   environment {
+    DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds')
     IMAGE_NAME = "charafedd20/backend-app"
   }
 
@@ -23,12 +24,7 @@ pipeline {
     stage('Build Docker image') {
       steps {
         dir('backend') {
-          withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh '''
-              echo $PASSWORD | docker login -u $USERNAME --password-stdin
-              docker build -t $IMAGE_NAME .
-            '''
-          }
+          sh 'docker build -t $IMAGE_NAME .'
         }
       }
     }
@@ -44,8 +40,12 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-        sh 'kubectl apply -f k8s/backend-deployment.yaml'
-        sh 'kubectl apply -f k8s/backend-service.yaml'
+        script {
+          docker.image('bitnami/kubectl:latest').inside('--volume $HOME/.kube:/root/.kube') {
+            sh 'kubectl apply -f k8s/backend-deployment.yaml'
+            sh 'kubectl apply -f k8s/backend-service.yaml'
+          }
+        }
       }
     }
   }
