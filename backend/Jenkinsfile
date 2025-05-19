@@ -2,15 +2,14 @@ pipeline {
   agent any
 
   environment {
-    DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds') // DockerHub credentials
+    DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds') // ID des identifiants DockerHub
     IMAGE_NAME = "charafedd20/backend-app"
   }
 
   stages {
     stage('Clone repository') {
       steps {
-        git credentialsId: 'github-creds', // GitHub credentials
-            url: 'https://github.com/m-elhamlaoui/development-platform-jihane.git'
+        git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/m-elhamlaoui/development-platform-jihane.git'
       }
     }
 
@@ -33,10 +32,8 @@ pipeline {
     stage('Push Docker image') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh '''
-            echo $PASSWORD | docker login -u $USERNAME --password-stdin
-            docker push $IMAGE_NAME
-          '''
+          sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+          sh 'docker push $IMAGE_NAME'
         }
       }
     }
