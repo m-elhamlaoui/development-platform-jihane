@@ -44,7 +44,7 @@ pipeline {
           
           docker.image('bitnami/kubectl:latest').inside("--entrypoint='' --volume /Users/charafeddineelhmamouchi/.kube:/root/.kube") {
           //docker.image('bitnami/kubectl:latest').inside("--volume /Users/charafeddineelhmamouchi/.kube:/root/.kube") {
-            sh 'kubectl apply -f k8s/backend-deployment.yaml'
+            sh 'kubectl --kubeconfig=/root/.kube/config apply -f k8s/backend-deployment.yaml'
             sh 'kubectl apply -f k8s/backend-service.yaml'
           }
         }
