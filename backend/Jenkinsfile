@@ -38,17 +38,17 @@ pipeline {
       }
     }
 
+    stage('Check Kubernetes Nodes') {
+      steps {
+        sh 'minikube kubectl -- get nodes'
+      }
+    }
+
     stage('Deploy to Kubernetes') {
       steps {
-        script {
-          
-          docker.image('bitnami/kubectl:latest').inside("--entrypoint='' --volume /Users/charafeddineelhmamouchi/.kube:/root/.kube --volume /Users/charafeddineelhmamouchi/.minikube:/root/.minikube") {
-            sh 'kubectl get nodes'
-
-          //docker.image('bitnami/kubectl:latest').inside("--volume /Users/charafeddineelhmamouchi/.kube:/root/.kube") {
-            sh 'kubectl --kubeconfig=/root/.kube/config apply -f k8s/backend-deployment.yaml'
-            sh 'kubectl apply -f k8s/backend-service.yaml'
-          }
+        dir('k8s') {
+          sh 'minikube kubectl -- apply -f backend-deployment.yaml'
+          sh 'minikube kubectl -- apply -f backend-service.yaml'
         }
       }
     }
