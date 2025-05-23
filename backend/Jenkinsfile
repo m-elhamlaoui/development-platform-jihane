@@ -3,7 +3,6 @@ pipeline {
 
   environment {
     IMAGE_NAME = "charafedd20/backend-app"
-    DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds')
   }
 
   stages {
@@ -24,7 +23,7 @@ pipeline {
     stage('Build Docker image') {
       steps {
         dir('backend') {
-          sh 'docker build -t $IMAGE_NAME .'
+          sh 'export PATH=$PATH:/usr/local/bin && docker build -t $IMAGE_NAME .'
         }
       }
     }
@@ -32,8 +31,9 @@ pipeline {
     stage('Push Docker image') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
-          sh 'docker push $IMAGE_NAME'
+           sh 'export PATH=$PATH:/usr/local/bin && echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+           sh 'export PATH=$PATH:/usr/local/bin && docker push $IMAGE_NAME'
+
         }
       }
     }
@@ -42,15 +42,11 @@ pipeline {
       steps {
         script {
           docker.image('bitnami/kubectl:latest').inside(
-            "--entrypoint='' " +
-            "-u 0:0 " +
+            "--user=0:0 " +
             "-v /root/.kube:/root/.kube:ro " +
             "-v /root/.minikube:/root/.minikube:ro"
           ) {
-            // Vérifie que kubectl fonctionne avec Minikube
             sh 'kubectl get nodes --kubeconfig=/root/.kube/config'
-
-            // Applique les manifests
             sh 'kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=/root/.kube/config'
             sh 'kubectl apply -f k8s/backend-service.yaml --kubeconfig=/root/.kube/config'
           }
