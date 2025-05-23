@@ -2,8 +2,8 @@ pipeline {
   agent any
 
   environment {
-    DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds')
     IMAGE_NAME = "charafedd20/backend-app"
+    DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds')
   }
 
   stages {
@@ -41,16 +41,19 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         script {
-          sh '''
-            echo "✅ Vérification du statut de Minikube"
-            minikube status
+          docker.image('bitnami/kubectl:latest').inside(
+            "--entrypoint='' " +
+            "-u 0:0 " +
+            "-v /Users/charafeddineelhmamouchi/.kube:/root/.kube:ro " +
+            "-v /Users/charafeddineelhmamouchi/.minikube:/root/.minikube:ro"
+          ) {
+            // Vérifie que kubectl fonctionne avec Minikube
+            sh 'kubectl get nodes --kubeconfig=/root/.kube/config'
 
-            echo "🚀 Déploiement de l'application sur Minikube"
-            minikube kubectl -- apply -f k8s/backend-deployment.yaml
-            minikube kubectl -- apply -f k8s/backend-service.yaml
-
-            echo "✅ Déploiement terminé"
-          '''
+            // Applique les manifests
+            sh 'kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=/root/.kube/config'
+            sh 'kubectl apply -f k8s/backend-service.yaml --kubeconfig=/root/.kube/config'
+          }
         }
       }
     }
