@@ -44,8 +44,8 @@ pipeline {
           docker.image('bitnami/kubectl:latest').inside(
             "--entrypoint='' " +
             "-u 0:0 " +
-            "-v /Users/charafeddineelhmamouchi/.kube:/root/.kube:ro " +
-            "-v /Users/charafeddineelhmamouchi/.minikube:/root/.minikube:ro"
+            "-v /root/.kube:/root/.kube:ro " +
+            "-v /root/.minikube:/root/.minikube:ro"
           ) {
             // Vérifie que kubectl fonctionne avec Minikube
             sh 'kubectl get nodes --kubeconfig=/root/.kube/config'
