@@ -9,7 +9,9 @@ pipeline {
   stages {
     stage('Clone repository') {
       steps {
-        git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/m-elhamlaoui/development-platform-jihane.git'
+        checkout scm
+
+        //git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/m-elhamlaoui/development-platform-jihane.git'
       }
     }
 
