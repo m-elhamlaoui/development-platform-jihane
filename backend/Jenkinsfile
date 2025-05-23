@@ -2,16 +2,15 @@ pipeline {
   agent any
 
   environment {
-    IMAGE_NAME = "charafedd20/backend-app"
-    DOCKER = "/usr/local/bin/docker"
+    IMAGE_NAME = 'charafedd20/backend-app:latest'
+    DOCKER_CLI = '/usr/bin/docker'  // adapte si besoin
+    KUBECONFIG = '/root/.kube/config'  // adapte selon ta config
   }
 
   stages {
-    stage('Clone repository') {
+    stage('Checkout') {
       steps {
-        checkout scm
-
-        //git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/m-elhamlaoui/development-platform-jihane.git'
+        git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/m-elhamlaoui/development-platform-jihane.git'
       }
     }
 
@@ -23,36 +22,29 @@ pipeline {
       }
     }
 
-    stage('Build Docker image') {
+    stage('Build Docker Image') {
       steps {
         dir('backend') {
-          sh "${DOCKER} build -t ${IMAGE_NAME} ."
+          sh "${DOCKER_CLI} build -t ${IMAGE_NAME} ."
         }
       }
     }
 
-    stage('Push Docker image') {
+    stage('Push Docker Image') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-          sh "echo ${PASSWORD} | ${DOCKER} login -u ${USERNAME} --password-stdin"
-          sh "${DOCKER} push ${IMAGE_NAME}"
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          sh """
+            echo $DOCKER_PASS | $DOCKER_CLI login -u $DOCKER_USER --password-stdin
+            $DOCKER_CLI push $IMAGE_NAME
+          """
         }
       }
     }
 
     stage('Deploy to Kubernetes') {
       steps {
-        script {
-          docker.image('bitnami/kubectl:latest').inside(
-            "--user=0:0 " +
-            "-v /root/.kube:/root/.kube:ro " +
-            "-v /root/.minikube:/root/.minikube:ro"
-          ) {
-            sh 'kubectl get nodes --kubeconfig=/root/.kube/config'
-            sh 'kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=/root/.kube/config'
-            sh 'kubectl apply -f k8s/backend-service.yaml --kubeconfig=/root/.kube/config'
-          }
-        }
+        sh "kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=$KUBECONFIG"
+        sh "kubectl apply -f k8s/backend-service.yaml --kubeconfig=$KUBECONFIG"
       }
     }
   }
