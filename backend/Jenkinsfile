@@ -3,8 +3,8 @@ pipeline {
 
   environment {
     IMAGE_NAME = 'charafedd20/backend-app:latest'
-    DOCKER_CLI = '/usr/bin/docker'  // adapte si besoin
-    KUBECONFIG = '/root/.kube/config'  // adapte selon ta config
+    DOCKER_CLI = '/usr/bin/docker'  // adapte si nécessaire
+    KUBECONFIG_PATH = '/root/.kube/config'  // chemin kubeconfig dans le conteneur kubectl
   }
 
   stages {
@@ -43,8 +43,14 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-        sh "kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=$KUBECONFIG"
-        sh "kubectl apply -f k8s/backend-service.yaml --kubeconfig=$KUBECONFIG"
+        script {
+          docker.image('bitnami/kubectl:latest').inside('-v $HOME/.kube:/root/.kube:ro') {
+            sh """
+              kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=${KUBECONFIG_PATH}
+              kubectl apply -f k8s/backend-service.yaml --kubeconfig=${KUBECONFIG_PATH}
+            """
+          }
+        }
       }
     }
   }
