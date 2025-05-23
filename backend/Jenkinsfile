@@ -38,17 +38,21 @@ pipeline {
       }
     }
 
-    stage('Check Kubernetes Nodes') {
-      steps {
-        sh 'minikube kubectl -- get nodes'
-      }
-    }
-
     stage('Deploy to Kubernetes') {
       steps {
-        dir('k8s') {
-          sh 'minikube kubectl -- apply -f backend-deployment.yaml'
-          sh 'minikube kubectl -- apply -f backend-service.yaml'
+        script {
+          docker.image('bitnami/kubectl:latest').inside(
+            "--entrypoint='' " +
+            "-v /Users/charafeddineelhmamouchi/.kube:/root/.kube:ro " +
+            "-v /Users/charafeddineelhmamouchi/.minikube:/root/.minikube:ro"
+          ) {
+            // Vérification que le cluster est joignable
+            sh 'kubectl get nodes --kubeconfig=/root/.kube/config'
+
+            // Déploiement
+            sh 'kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=/root/.kube/config'
+            sh 'kubectl apply -f k8s/backend-service.yaml --kubeconfig=/root/.kube/config'
+          }
         }
       }
     }
