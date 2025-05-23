@@ -41,18 +41,16 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         script {
-          docker.image('bitnami/kubectl:latest').inside(
-            "--entrypoint='' " +
-            "-v /Users/charafeddineelhmamouchi/.kube:/root/.kube:ro " +
-            "-v /Users/charafeddineelhmamouchi/.minikube:/root/.minikube:ro"
-          ) {
-            // Vérification que le cluster est joignable
-            sh 'kubectl get nodes --kubeconfig=/root/.kube/config'
+          sh '''
+            echo "✅ Vérification du statut de Minikube"
+            minikube status
 
-            // Déploiement
-            sh 'kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=/root/.kube/config'
-            sh 'kubectl apply -f k8s/backend-service.yaml --kubeconfig=/root/.kube/config'
-          }
+            echo "🚀 Déploiement de l'application sur Minikube"
+            minikube kubectl -- apply -f k8s/backend-deployment.yaml
+            minikube kubectl -- apply -f k8s/backend-service.yaml
+
+            echo "✅ Déploiement terminé"
+          '''
         }
       }
     }
