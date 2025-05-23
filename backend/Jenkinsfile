@@ -3,6 +3,7 @@ pipeline {
 
   environment {
     IMAGE_NAME = "charafedd20/backend-app"
+    DOCKER = "/usr/local/bin/docker"
   }
 
   stages {
@@ -23,7 +24,7 @@ pipeline {
     stage('Build Docker image') {
       steps {
         dir('backend') {
-          sh 'export PATH=$PATH:/usr/local/bin && docker build -t $IMAGE_NAME .'
+          sh '$DOCKER build -t $IMAGE_NAME .'
         }
       }
     }
@@ -31,9 +32,8 @@ pipeline {
     stage('Push Docker image') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-           sh 'export PATH=$PATH:/usr/local/bin && echo $PASSWORD | docker login -u $USERNAME --password-stdin'
-           sh 'export PATH=$PATH:/usr/local/bin && docker push $IMAGE_NAME'
-
+          sh 'echo $PASSWORD | $DOCKER login -u $USERNAME --password-stdin'
+          sh '$DOCKER push $IMAGE_NAME'
         }
       }
     }
