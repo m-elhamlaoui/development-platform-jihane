@@ -33,10 +33,11 @@ pipeline {
     stage('Push Docker Image') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh """
-            echo $DOCKER_PASS | $DOCKER_CLI login -u $DOCKER_USER --password-stdin
-            $DOCKER_CLI push $IMAGE_NAME
-          """
+          // Login Docker sans interpolation Groovy pour éviter le warning
+          sh '''
+            echo "$DOCKER_PASS" | /usr/bin/docker login -u "$DOCKER_USER" --password-stdin
+          '''
+          sh "${DOCKER_CLI} push ${IMAGE_NAME}"
         }
       }
     }
@@ -51,9 +52,12 @@ pipeline {
               kubectl version --client --kubeconfig=${KUBECONFIG_PATH}
               echo "kubectl config view (début du fichier) :"
               head -20 ${KUBECONFIG_PATH}
+              echo "Liste des fichiers dans workspace :"
+              ls -l
               echo "Application des manifests Kubernetes..."
-              kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=${KUBECONFIG_PATH}
-              kubectl apply -f k8s/backend-service.yaml --kubeconfig=${KUBECONFIG_PATH}
+              cd k8s
+              kubectl apply -f backend-deployment.yaml --kubeconfig=${KUBECONFIG_PATH}
+              kubectl apply -f backend-service.yaml --kubeconfig=${KUBECONFIG_PATH}
               echo "=== Déploiement Kubernetes terminé ==="
             """
           }
