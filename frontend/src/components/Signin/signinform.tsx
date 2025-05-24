@@ -48,7 +48,7 @@ const Signinform = () => {
   return (
     <div className="flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+        <form onSubmit={handleSubmit} className=" backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-white mb-2">Welcome Back</h1>
             <p className="text-gray-300">Sign in to continue your journey</p>
@@ -76,7 +76,7 @@ const Signinform = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Password</label>
+              <label className="text-sm font-medium ext-gray-700">Password</label>
               <Passwd password={password} setPassword={setPassword} />
             </div>
 
