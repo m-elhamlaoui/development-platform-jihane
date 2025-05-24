@@ -45,7 +45,7 @@ pipeline {
       steps {
         script {
           docker.image('lachlanevenson/k8s-kubectl:latest').inside('-v /var/jenkins_home/.kube:/root/.kube:ro') {
-            sh """
+            sh '''
               echo "=== Déploiement Kubernetes démarré ==="
               echo "kubectl version (client) :"
               kubectl version --client --kubeconfig=${KUBECONFIG_PATH}
@@ -55,7 +55,7 @@ pipeline {
               kubectl apply -f k8s/backend-deployment.yaml --kubeconfig=${KUBECONFIG_PATH}
               kubectl apply -f k8s/backend-service.yaml --kubeconfig=${KUBECONFIG_PATH}
               echo "=== Déploiement Kubernetes terminé ==="
-            """
+            '''
           }
         }
       }
