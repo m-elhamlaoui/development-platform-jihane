@@ -70,15 +70,21 @@ Before running this application, make sure you have the following installed:
 
 
 ## 📸 Screenshots
-> _SIGNUP page_  
-> ![Launch dashboard screenshot](./desktop-view/H2.png)  
 
 > _Welcome page_  
 > ![Launch dashboard screenshot](./desktop-view/WelcomePage.png) 
 The landing page of the application, featuring navigation and a brief overview of space data categories,
 First page users see with a welcoming message and navigation options to explore the app
+
 > _This image shows the continuation of the Welcome interface_
 > ![Launch dashboard screenshot](./desktop-view/WelcomePage2.png) 
+
+> _SIGNUP page_  
+> ![Launch dashboard screenshot](./desktop-view/signup.png)  
+
+> _SIGNIN page_  
+> ![Launch dashboard screenshot](./desktop-view/signin.png)
+ 
 **Home page Space Launch Dashboard:**
 > _Incoming Launches_
 > ![Launch dashboard screenshot](./desktop-view/Homepage.png) 
@@ -94,23 +100,29 @@ Shows a real-time or upcoming list of rocket launches, often with countdowns or 
 > _Launche Details_  
 > ![Astronauts page screenshot](./desktop-view/detailsLaunch.png)
 Provides comprehensive information about a specific rocket launch including the rocket, pad, mission, and status
+
 >_Space Programs Overview_
 > ![Astronauts page screenshot](./desktop-view/SpacePrograms.png)
 Presents different space programswith their objectives, timelines, and agencies involved.
+
 >_Program Details Page_
 > ![Astronauts page screenshot](./desktop-view/programeDetails.png)
+
 >_Agencies Overview_
 > ![Astronauts page screenshot](./desktop-view/Agencies.png)
 Lists all space agencies in a card/grid view with basic information and a button to view more details.
+
 >_Agency Details Page_
 > ![Astronauts page screenshot](./desktop-view/Agencie_Details.png)
- Displays detailed information about a selected space agency
+ Displays detailed information about a selected space agency.
+
 >_Astronaut Directory_
 > ![Astronauts page screenshot](./desktop-view/Astronauts.png)
  Displays a searchable list of astronauts with their names, images, and links to view their details.
+
 >_Astronaut Profile_
 > ![Astronauts page screenshot](./desktop-view/Astronauts_Details.png)
- Shows detailed information about a selected astronaut including biography, missions,  nationality 
+ Shows detailed information about a selected astronaut including biography, missions,  nationality .
 
 
 >_User Profile Page_
