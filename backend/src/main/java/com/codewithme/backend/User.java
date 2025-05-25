@@ -28,13 +28,48 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
+    
     public String getUsername() {
         return email;
     }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public void setPassword(String password) {
         this.password = password;
     }
+    
     public void setEmail(String email) {
         this.email = email;
+    }
+    
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+    
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+    
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
