@@ -32,11 +32,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
                         .requestMatchers("/api/signup", "/api/login", "/api/test-cors").permitAll()
                         .requestMatchers("/api/space/**").permitAll()  // Allow all space API endpoints
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()   // Allow actuator endpoints for health checks
+                        .requestMatchers("/health", "/info", "/metrics").permitAll() // Additional health endpoints
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight requests
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // Allow GET requests to API
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll() // Allow all other requests for development
                 );
 
         return http.build();
@@ -45,9 +49,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        // Allow multiple origins for development
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:80",              // Docker frontend
+            "http://localhost:5173",            // Vite dev server
+            "http://localhost:3000",            // Alternative React dev server
+            "http://127.0.0.1:80",              // Alternative localhost
+            "http://127.0.0.1:5173",            // Alternative localhost
+            "http://development-platform.local" // Minikube frontend
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 

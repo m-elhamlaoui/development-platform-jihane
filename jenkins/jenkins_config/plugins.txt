@@ -1,0 +1,50 @@
+# Essential plugins for Development Platform Jihane CI/CD
+
+# Core plugins
+ant:latest
+build-timeout:latest
+credentials-binding:latest
+timestamper:latest
+ws-cleanup:latest
+workflow-aggregator:latest
+
+# Git and SCM
+git:latest
+github:latest
+github-branch-source:latest
+
+# Docker
+docker-plugin:latest
+docker-workflow:latest
+
+# Kubernetes
+kubernetes:latest
+kubernetes-cli:latest
+
+# Node.js and Maven
+nodejs:latest
+maven-plugin:latest
+
+# Testing and Quality
+junit:latest
+jacoco:latest
+htmlpublisher:latest
+sonar:latest
+
+# Security
+owasp-dependency-check:latest
+
+# Notifications
+slack:latest
+email-ext:latest
+
+# Pipeline
+pipeline-stage-view:latest
+pipeline-graph-analysis:latest
+blueocean:latest
+
+# Utilities
+ansicolor:latest
+build-name-setter:latest
+description-setter:latest
+environment-injector:latest 

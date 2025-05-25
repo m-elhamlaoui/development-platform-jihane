@@ -1,4 +1,3 @@
-
 package com.codewithme.backend.Controller;
 
 import com.codewithme.backend.service.UserService;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:80", "http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:80", "http://127.0.0.1:5173", "http://development-platform.local"})
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
