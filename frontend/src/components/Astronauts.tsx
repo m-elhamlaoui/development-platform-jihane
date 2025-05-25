@@ -324,7 +324,7 @@ const Astronauts: React.FC = () => {
         setError(null);
         
         console.log('Fetching astronauts from API...');
-        const response = await fetch('http://localhost:8080/api/space/astronauts?limit=20', {
+        const response = await fetch('/api/space/astronauts?limit=20', {
           credentials: 'include'
         });
         

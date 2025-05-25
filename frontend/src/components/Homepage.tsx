@@ -354,7 +354,7 @@ const Homepage: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`http://localhost:8080/api/space/launches?type=${activeTab}&limit=20`, {
+        const response = await fetch(`/api/space/launches?type=${activeTab}&limit=20`, {
           credentials: 'include'
         });
         

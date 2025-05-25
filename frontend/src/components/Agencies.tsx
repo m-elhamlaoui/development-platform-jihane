@@ -303,7 +303,7 @@ const Agencies: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('http://localhost:8080/api/space/agencies?limit=20', {
+        const response = await fetch('/api/space/agencies?limit=20', {
           credentials: 'include'
         });
         

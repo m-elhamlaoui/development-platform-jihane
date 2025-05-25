@@ -190,7 +190,7 @@ const AstronautDetails: React.FC = () => {
         setError(null);
         
         console.log('Fetching astronaut details for ID:', id);
-        const response = await fetch(`http://localhost:8080/api/space/astronauts/${id}`, {
+        const response = await fetch(`/api/space/astronauts/${id}`, {
           credentials: 'include'
         });
         
