@@ -6,7 +6,6 @@ pipeline {
         FRONTEND_IMAGE = "ismaimadani/beyondearth-frontend:${IMAGE_TAG}"
         BACKEND_IMAGE = "ismaimadani/beyondearth-backend:${IMAGE_TAG}"
         NAMESPACE = 'default'
-        PATH = "/usr/local/bin:${env.PATH}"
     }
     
     stages {
@@ -25,22 +24,14 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 sh '''
-                    if command -v docker >/dev/null 2>&1; then
-                        docker --version
-                        
-                        if [ -f frontend/Dockerfile ]; then
-                            docker build -t ${FRONTEND_IMAGE} frontend/
-                        fi
-                        
-                        if [ -f backend/Dockerfile ]; then
-                            docker build -t ${BACKEND_IMAGE} backend/
-                        fi
-                    else
-                        if [ -f /usr/local/bin/docker ]; then
-                            /usr/local/bin/docker --version
-                        else
-                            exit 1
-                        fi
+                    docker --version
+                    
+                    if [ -f frontend/Dockerfile ]; then
+                        docker build -t ${FRONTEND_IMAGE} frontend/
+                    fi
+                    
+                    if [ -f backend/Dockerfile ]; then
+                        docker build -t ${BACKEND_IMAGE} backend/
                     fi
                 '''
             }
@@ -50,11 +41,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh '''
-                        if command -v docker >/dev/null 2>&1; then
-                            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                        else
-                            exit 1
-                        fi
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
                     '''
                 }
             }
@@ -63,12 +50,8 @@ pipeline {
         stage('Push to Registry') {
             steps {
                 sh '''
-                    if command -v docker >/dev/null 2>&1; then
-                        docker push ${FRONTEND_IMAGE}
-                        docker push ${BACKEND_IMAGE}
-                    else
-                        exit 1
-                    fi
+                    docker push ${FRONTEND_IMAGE}
+                    docker push ${BACKEND_IMAGE}
                 '''
             }
         }
