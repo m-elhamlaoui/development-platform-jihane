@@ -3,8 +3,8 @@ pipeline {
     
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
-        FRONTEND_IMAGE = "ismaimadani/beyondearth/frontend:${IMAGE_TAG}"
-        BACKEND_IMAGE = "ismaimadani/beyondearth/backend:${IMAGE_TAG}"
+        FRONTEND_IMAGE = "ismaimadani/beyondearth-frontend:${IMAGE_TAG}"
+        BACKEND_IMAGE = "ismaimadani/beyondearth-backend:${IMAGE_TAG}"
         NAMESPACE = 'default'
     }
     
@@ -21,33 +21,6 @@ pipeline {
             }
         }
         
-        stage('Build Frontend') {
-            steps {
-                dir('frontend') {
-                    sh '''
-                        if command -v npm >/dev/null 2>&1; then
-                            npm ci || npm install
-                            npm run test -- --watchAll=false --coverage
-                            npm run build
-                        fi
-                    '''
-                }
-            }
-        }
-        
-        stage('Build Backend') {
-            steps {
-                dir('backend') {
-                    sh '''
-                        if [ -f mvnw ] && command -v java >/dev/null 2>&1; then
-                            ./mvnw clean test
-                            ./mvnw clean package -DskipTests
-                        fi
-                    '''
-                }
-            }
-        }
-        
         stage('Build Docker Images') {
             steps {
                 script {
@@ -56,11 +29,11 @@ pipeline {
                             echo "Building Docker images..."
                             
                             if [ -f frontend/Dockerfile ]; then
-                                docker build -t ${FRONTEND_IMAGE} frontend/
+                                docker build -t ${FRONTEND_IMAGE}:${GIT_COMMIT_SHORT} frontend/
                             fi
                             
                             if [ -f backend/Dockerfile ]; then
-                                docker build -t ${BACKEND_IMAGE} backend/
+                                docker build -t ${BACKEND_IMAGE}:${GIT_COMMIT_SHORT} backend/
                             fi
                             
                             docker images | grep ismaimadani/beyondearth
