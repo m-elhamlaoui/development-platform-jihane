@@ -30,20 +30,10 @@ public class SpaceDataService {
                 url += "upcoming/";
             } else if ("previous".equals(type)) {
                 url += "previous/";
-            } else if ("live".equals(type)) {
-                // For live launches, we'll use upcoming with a filter for live status
-                // Since there's no specific live endpoint, we'll filter upcoming launches
-                url += "upcoming/";
             }
-            // If type is null or unrecognized, use the default /launch/ endpoint
+            // For "all" or null type, use the default /launch/ endpoint
             
             url += "?limit=" + limit;
-            
-            // For live launches, add additional filtering if needed
-            if ("live".equals(type)) {
-                // We could add status filtering here if the API supports it
-                // For now, we'll let the frontend filter by status
-            }
             
             logger.info("Fetching launches from URL: {}", url);
             ResponseEntity<Object> response = restTemplate.getForEntity(url, Object.class);

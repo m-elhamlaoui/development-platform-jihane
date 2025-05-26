@@ -75,9 +75,9 @@ const LaunchesGrid: React.FC<LaunchesGridProps> = ({ launches, loading, error })
                 </div>
               )}
               {launch.status.name === 'Go' && (
-                <div style={styles.liveBadge}>
-                  <span style={styles.liveDot}></span>
-                  LIVE
+                <div style={styles.goBadge}>
+                  <span style={styles.goDot}></span>
+                  ALL
                 </div>
               )}
             </div>
@@ -205,7 +205,7 @@ const styles = {
     color: 'rgba(255, 255, 255, 0.5)',
     fontSize: '0.9rem'
   },
-  liveBadge: {
+  goBadge: {
     position: 'absolute',
     top: '1rem',
     right: '1rem',
@@ -219,7 +219,7 @@ const styles = {
     alignItems: 'center',
     gap: '0.5rem'
   },
-  liveDot: {
+  goDot: {
     width: '8px',
     height: '8px',
     background: 'white',
@@ -346,7 +346,7 @@ const Homepage: React.FC = () => {
   const [launches, setLaunches] = useState<Launch[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'previous' | 'live'>('upcoming');
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'previous' | 'all'>('upcoming');
 
   useEffect(() => {
     const fetchLaunches = async () => {
@@ -354,7 +354,14 @@ const Homepage: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`/api/space/launches?type=${activeTab}&limit=20`, {
+        // For "all" launches, we use null/undefined to get the default endpoint
+        const apiType = activeTab === 'all' ? undefined : activeTab;
+        
+        const url = apiType 
+          ? `/api/space/launches?type=${apiType}&limit=20`
+          : `/api/space/launches?limit=20`;
+        
+        const response = await fetch(url, {
           credentials: 'include'
         });
         
@@ -407,11 +414,11 @@ const Homepage: React.FC = () => {
         <button
           style={{
             ...styles.tabButton,
-            ...(activeTab === 'live' ? styles.tabButtonActive : {}),
+            ...(activeTab === 'all' ? styles.tabButtonActive : {}),
           }}
-          onClick={() => setActiveTab('live')}
+          onClick={() => setActiveTab('all')}
         >
-          Live Launches
+          All Launches
         </button>
       </div>
       <LaunchesGrid 
