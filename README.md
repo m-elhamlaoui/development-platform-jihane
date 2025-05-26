@@ -2,10 +2,23 @@
 # 🚀 Belong Earth – Space Launch Dashboard
 
 Real-time insights into humanity’s journey beyond Earth. **Belong Earth** aggregates data from public launch APIs and space-agency feeds to give you a beautiful, always-up-to-date dashboard of upcoming, live and historical rocket launches – plus deep dives into vehicles, missions, agencies and astronauts.
+A full-stack space exploration platform that enables user registration, authentication, and access to real-time space mission data through external APIs.
 
----
+
+
+
+
+## 📊 Overview
+
+Belong-earth is a containerized web application that provides users with secure access to space mission data including launches, astronauts, agencies, and space programs. The platform integrates with The Space Devs API while maintaining its own user management system.
 
 ## ✨ Key Features
+
+* User registration and authentication  
+* Real-time space launch data  
+* Astronaut profiles and information  
+* Space program details and mission patches  
+* Responsive web interface with modern UI components  
 
 | Category | Description |
 |----------|-------------|
@@ -18,55 +31,112 @@ Real-time insights into humanity’s journey beyond Earth. **Belong Earth** aggr
 | **Responsive UI** | Tailored layouts for desktop, tablet and mobile. Dark-mode first, with automatic theming. |
 | **Secure Auth** | JWT-based Spring Security with role-based access (admin/editor/viewer). |
 | **Admin Console** | Protected React panel for managing cached launch data, triggering manual syncs and adding custom content. |
-
----
-## 🛠️ Tech Stack
-
-### Frontend
-- **React 18** with **TypeScript**
-- **React Router** for navigation
-- **Tailwind CSS** for styling
-- **React Toastify** for notifications
-- **Vite** as build tool (running on port 5173)
+## Architecture
 
 ### Backend
-- **Spring Boot** (Java)
-- **Spring Security** for authentication and authorization
-- **Spring Web** for REST API
-- **BCrypt** for password encryption
-- **SLF4J** for logging
-- **CORS** configuration for cross-origin requests
+* Framework: Spring Boot 3.4.5 with Java 17  
+* Database: PostgreSQL with Spring Data JPA  
+* Security: Spring Security with JWT authentication  
+* External APIs: RestTemplate for The Space Devs API integration  
 
-### Database
-- Relational database (PostgreSQL )
-- JPA/Hibernate for ORM
+### Frontend
+* Framework: React 19.1.0 with TypeScript package.json:17-18  
+* Build Tool: Vite 6.2.0 package.json:35  
+* Styling: Tailwind CSS 4.1.3 package.json:22  
+* HTTP Client: Fetch for API communication package.json:14 
+### Overall System Architecture
+> ![System Architecture](./desktop-view/ArchitectureAppli.png)
 
-### External APIs
-- Space data integration via external API
-    - API externe : The Space Devs
-      Rôle : Fournit des données sur les lancements de fusées.
+ 
 
-## 📋 Prerequisites
+# 📐 Diagrammes de Conception 
 
-Before running this application, make sure you have the following installed:
+Ce dossier contient les diagrammes de conception du projet **Belong-earth**, représentant les interactions entre l'utilisateur et le système, ainsi que l'architecture logicielle globale.
 
-- **Node.js** (v16 or higher)
-- **npm** 
-- **Java 17** or higher
-- **Maven**
-- **Database** (PostgreSQL)
+## 🗂 Contenu des diagrammes
 
-## 🚀 Getting Started
+### 1. Diagramme de cas d'utilisation (Use Case Diagram)
+> ![Launch dashboard screenshot](./desktop-view/UseCase.png) 
 
-### Backend Setup
+### 2. Diagramme de classes (Class Diagram)
+> ![Launch dashboard screenshot](./desktop-view/Diagramme_de_classe-Belong-earth.png) 
 
+### 3. Diagramme de séquence (Sequence Diagram)
+- **Authentification** 
+> ![Launch dashboard screenshot](./desktop-view/Séquence1-Authentification.png) 
+- **Navigation utilisateur dans l’application Belong-earth** 
+> ![Launch dashboard screenshot](./desktop-view/Séquence2_Home.png) 
+
+##  🛠️Technology Stack
+
+| Component               | Technology      | Version  |
+|------------------------|-----------------|----------|
+| Backend Framework      | Spring Boot     | 3.4.5    |
+| Frontend Framework     | React           | 19.1.0   |
+| Build Tool (Frontend)  | Vite            | 6.2.0    |
+| Styling                | Tailwind CSS    | 4.1.3    |
+| Database               | PostgreSQL      | 42.7.5   |
+| HTTP Client            | Axios           | 1.9.0    |
+| Authentication         | Firebase        | 11.6.1   |
+
+## 🚀Getting Started
+
+### 📋 Prerequisites
+* Java 17+  
+* Node.js 18+  
+* PostgreSQL database  
+* Maven 3.6+  
 1. **Clone the repository**
     ```bash
     git clone https://github.com/m-elhamlaoui/development-platform-jihane.git
     cd development-platform-jihane
-2. **Navigate to the backend directory**
-   ```bash
-   cd backend
+2. **Backend Setup**
+    ```bash
+    cd backend  
+    ./mvnw spring-boot:run
+
+3. **Frontend Setup**
+    ```bash
+    cd frontend  
+    npm install  
+    npm run dev
+
+The frontend development server runs on port 5173, while the backend API serves on port 8080.
+
+
+---
+
+
+## 🔗API Integration
+
+The application integrates with The Space Devs API (lldev.thespacedevs.com) to provide:
+
+- Launch schedules and details
+- Astronaut information 
+- Space program data  
+- Mission details and imagery  
+
+## 📦Deployment
+
+The application supports containerized deployment using Docker and Kubernetes configurations. 
+
+## 💻Development
+
+### Frontend Development Scripts
+
+- `npm run dev` - Start development server `package.json:7`  
+- `npm run build` - Build for production `package.json:8`  
+- `npm run lint` - Run ESLint `package.json:9`  
+
+### Backend Development
+
+The backend uses Maven wrapper for cross-platform compatibility and includes Spring Boot development tools for hot reloading.
+
+
+
+
+
+
 
 
 ## 📸 Screenshots
@@ -90,12 +160,12 @@ First page users see with a welcoming message and navigation options to explore 
 > ![Launch dashboard screenshot](./desktop-view/Homepage.png) 
 
 > _Past Launches_
-> ![Launch dashboard screenshot](./desktop-view/PastLaunches.png)  
+> ![Launch dashboard screenshot](./desktop-view/PastLaunches.jpg)  
 Lists completed launches with archived details such as date, success status, and mission outcome.
 
->_live Launches_
-> ![Launch dashboard screenshot](./desktop-view/LiveLaunches.png) 
-Shows a real-time or upcoming list of rocket launches, often with countdowns or launch times.
+>_All Launches_
+> ![Launch dashboard screenshot](./desktop-view/ALLlanches.jpg) 
+Shows a past or upcoming list of rocket launches, often with countdowns or launch times.
 
 > _Launche Details_  
 > ![Astronauts page screenshot](./desktop-view/detailsLaunch.png)
@@ -128,6 +198,12 @@ Lists all space agencies in a card/grid view with basic information and a button
 >_User Profile Page_
 > ![Astronauts page screenshot](./desktop-view/Profile.png)
 
+
+## 🎥 Demo Vidéo
+
+You can watch the application demonstration video here:
+
+👉 [Watch the demo on Google Drive](https://drive.google.com/file/d/VIDEO_ID/view)
 
 
 
