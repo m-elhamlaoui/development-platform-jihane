@@ -37,7 +37,7 @@ services:
       CLOUDINARY_API_KEY: your-cloudinary-api-key
       CLOUDINARY_API_SECRET: your-cloudinary-api-secret
     ports:
-      - "8080:8080"
+      - "8090:8090"
     depends_on:
       database:
         condition: service_healthy
@@ -46,7 +46,7 @@ services:
     volumes:
       - ./backend/logs:/app/logs
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8090/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -59,7 +59,7 @@ services:
       dockerfile: Dockerfile
     container_name: development-platform-frontend
     environment:
-      VITE_API_URL: http://localhost:8080/api
+      VITE_API_URL: http://localhost:8090/api
     ports:
       - "80:80"
     depends_on:

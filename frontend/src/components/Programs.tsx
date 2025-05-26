@@ -152,7 +152,7 @@ const Programs: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        const url = 'http://localhost:8080/api/space/programs?limit=20';
+        const url = 'http://localhost:8090/api/space/programs?limit=20';
         console.log('Fetching programs from URL:', url);
         
         const response = await fetch(url, {
