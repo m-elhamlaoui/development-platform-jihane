@@ -10,7 +10,7 @@ import com.codewithme.backend.service.SpaceDataService;
 
 @RestController
 @RequestMapping("/api/space")
-@CrossOrigin(origins = {"http://localhost:80", "http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:80", "http://127.0.0.1:5173", "http://development-platform.local"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:80", "http://localhost:5173", "http://localhost:3000", "http://localhost:8081", "http://127.0.0.1:80", "http://127.0.0.1:5173", "http://127.0.0.1:8081", "http://development-platform.local"}, allowCredentials = "true")
 public class SpaceDataController {
     private static final Logger logger = LoggerFactory.getLogger(SpaceDataController.class);
     private final SpaceDataService spaceDataService;

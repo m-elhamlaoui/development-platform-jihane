@@ -21,7 +21,7 @@ FROM nginx:alpine
 # Copy built application
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration
+# Copy nginx configuration for Docker Compose
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80

@@ -84,44 +84,9 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
 
-  # Prometheus (monitoring)
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: development-platform-prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
-    networks:
-      - development-platform-network
-
-  # Grafana (dashboards)
-  grafana:
-    image: grafana/grafana:latest
-    container_name: development-platform-grafana
-    ports:
-      - "3000:3000"
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
-    networks:
-      - development-platform-network
-
 volumes:
   postgres_data:
   redis_data:
-  prometheus_data:
-  grafana_data:
 
 networks:
   development-platform-network:

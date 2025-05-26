@@ -19,7 +19,7 @@ spec:
           image: development-platform-jihane/backend:latest
           imagePullPolicy: Never  # Use local image built in Minikube
           ports:
-            - containerPort: 8080
+            - containerPort: 8090
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "production"
@@ -47,13 +47,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: 8080
+              port: 8090
             initialDelaySeconds: 60
             periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /health
-              port: 8080
+              port: 8090
             initialDelaySeconds: 30
             periodSeconds: 10
 ---
@@ -66,6 +66,6 @@ spec:
     app: backend
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 8090
+      targetPort: 8090
   type: ClusterIP

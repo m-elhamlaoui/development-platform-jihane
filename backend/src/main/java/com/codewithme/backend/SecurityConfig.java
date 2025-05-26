@@ -54,8 +54,10 @@ public class SecurityConfig {
             "http://localhost:80",              // Docker frontend
             "http://localhost:5173",            // Vite dev server
             "http://localhost:3000",            // Alternative React dev server
+            "http://localhost:8081",            // Port-forward frontend
             "http://127.0.0.1:80",              // Alternative localhost
             "http://127.0.0.1:5173",            // Alternative localhost
+            "http://127.0.0.1:8081",            // Alternative localhost port-forward
             "http://development-platform.local" // Minikube frontend
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
