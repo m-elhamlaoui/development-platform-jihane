@@ -10,9 +10,6 @@ pipeline {
     
     stages {
         stage('Checkout') {
-            when {
-                branch 'main'
-            }
             steps {
                 checkout scm
                 script {
@@ -25,9 +22,6 @@ pipeline {
         }
         
         stage('Build Frontend') {
-            when {
-                branch 'main'
-            }
             steps {
                 dir('frontend') {
                     sh '''
@@ -42,9 +36,6 @@ pipeline {
         }
         
         stage('Build Backend') {
-            when {
-                branch 'main'
-            }
             steps {
                 dir('backend') {
                     sh '''
@@ -58,9 +49,6 @@ pipeline {
         }
         
         stage('Build Docker Images') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     sh '''
@@ -83,9 +71,6 @@ pipeline {
         }
         
         stage('Docker Login') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -101,9 +86,6 @@ pipeline {
         }
         
         stage('Push to Registry') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     sh '''
