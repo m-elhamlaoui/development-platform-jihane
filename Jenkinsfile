@@ -88,19 +88,16 @@ pipeline {
                     if command -v docker >/dev/null 2>&1; then
                         echo "Pushing images to registry..."
                         
-                        if docker images | grep -q "${FRONTEND_IMAGE}"; then
-                            echo "Pushing frontend image: ${FRONTEND_IMAGE}"
-                            docker push ${FRONTEND_IMAGE}
-                        else
-                            echo "Frontend image not found: ${FRONTEND_IMAGE}"
-                        fi
+                        echo "Available images:"
+                        docker images | grep ismaimadani/beyondearth
                         
-                        if docker images | grep -q "${BACKEND_IMAGE}"; then
-                            echo "Pushing backend image: ${BACKEND_IMAGE}"
-                            docker push ${BACKEND_IMAGE}
-                        else
-                            echo "Backend image not found: ${BACKEND_IMAGE}"
-                        fi
+                        echo "Pushing frontend image: ${FRONTEND_IMAGE}"
+                        docker push ${FRONTEND_IMAGE}
+                        
+                        echo "Pushing backend image: ${BACKEND_IMAGE}"
+                        docker push ${BACKEND_IMAGE}
+                        
+                        echo "Push completed successfully!"
                     else
                         echo "❌ Docker not available for push"
                         exit 1
