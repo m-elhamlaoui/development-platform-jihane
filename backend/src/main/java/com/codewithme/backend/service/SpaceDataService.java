@@ -24,10 +24,27 @@ public class SpaceDataService {
     public Object getLaunches(String type, int limit) {
         try {
             String url = SPACE_API_BASE_URL + "/launch/";
-            if (type != null) {
-                url += "?type=" + type;
+            
+            // Use specific endpoints for different launch types
+            if ("upcoming".equals(type)) {
+                url += "upcoming/";
+            } else if ("previous".equals(type)) {
+                url += "previous/";
+            } else if ("live".equals(type)) {
+                // For live launches, we'll use upcoming with a filter for live status
+                // Since there's no specific live endpoint, we'll filter upcoming launches
+                url += "upcoming/";
             }
-            url += (url.contains("?") ? "&" : "?") + "limit=" + limit;
+            // If type is null or unrecognized, use the default /launch/ endpoint
+            
+            url += "?limit=" + limit;
+            
+            // For live launches, add additional filtering if needed
+            if ("live".equals(type)) {
+                // We could add status filtering here if the API supports it
+                // For now, we'll let the frontend filter by status
+            }
+            
             logger.info("Fetching launches from URL: {}", url);
             ResponseEntity<Object> response = restTemplate.getForEntity(url, Object.class);
             logger.info("Launch API response status: {}", response.getStatusCode());
