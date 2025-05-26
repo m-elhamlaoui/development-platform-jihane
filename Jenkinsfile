@@ -23,58 +23,63 @@ pipeline {
         
         stage('Build Docker Images') {
             steps {
-                script {
-                    sh '''
-                        if command -v docker >/dev/null 2>&1; then
-                            echo "Building Docker images..."
-                            
-                            if [ -f frontend/Dockerfile ]; then
-                                docker build -t ${FRONTEND_IMAGE}:${GIT_COMMIT_SHORT} frontend/
-                            fi
-                            
-                            if [ -f backend/Dockerfile ]; then
-                                docker build -t ${BACKEND_IMAGE}:${GIT_COMMIT_SHORT} backend/
-                            fi
-                            
-                            docker images | grep ismaimadani/beyondearth
-                        fi
-                    '''
-                }
+                sh '''
+                    echo "Checking Docker availability..."
+                    docker --version
+                    
+                    echo "Building Docker images..."
+                    
+                    if [ -f frontend/Dockerfile ]; then
+                        echo "Building frontend image: ${FRONTEND_IMAGE}"
+                        docker build -t ${FRONTEND_IMAGE} frontend/
+                    else
+                        echo "frontend/Dockerfile not found"
+                    fi
+                    
+                    if [ -f backend/Dockerfile ]; then
+                        echo "Building backend image: ${BACKEND_IMAGE}"
+                        docker build -t ${BACKEND_IMAGE} backend/
+                    else
+                        echo "backend/Dockerfile not found"
+                    fi
+                    
+                    echo "Listing built images:"
+                    docker images | grep ismaimadani/beyondearth || echo "No images found"
+                '''
             }
         }
         
         stage('Docker Login') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh '''
-                            if command -v docker >/dev/null 2>&1; then
-                                echo "Logging into Docker registry..."
-                                echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                            fi
-                        '''
-                    }
+                withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                        echo "Logging into Docker registry..."
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        echo "Docker login successful"
+                    '''
                 }
             }
         }
         
         stage('Push to Registry') {
             steps {
-                script {
-                    sh '''
-                        if command -v docker >/dev/null 2>&1; then
-                            echo "Pushing images to registry..."
-                            
-                            if docker images | grep -q "${FRONTEND_IMAGE}"; then
-                                docker push ${FRONTEND_IMAGE}
-                            fi
-                            
-                            if docker images | grep -q "${BACKEND_IMAGE}"; then
-                                docker push ${BACKEND_IMAGE}
-                            fi
-                        fi
-                    '''
-                }
+                sh '''
+                    echo "Pushing images to registry..."
+                    
+                    if docker images | grep -q "${FRONTEND_IMAGE}"; then
+                        echo "Pushing frontend image: ${FRONTEND_IMAGE}"
+                        docker push ${FRONTEND_IMAGE}
+                    else
+                        echo "Frontend image not found: ${FRONTEND_IMAGE}"
+                    fi
+                    
+                    if docker images | grep -q "${BACKEND_IMAGE}"; then
+                        echo "Pushing backend image: ${BACKEND_IMAGE}"
+                        docker push ${BACKEND_IMAGE}
+                    else
+                        echo "Backend image not found: ${BACKEND_IMAGE}"
+                    fi
+                '''
             }
         }
     }
@@ -84,6 +89,7 @@ pipeline {
             sh '''
                 echo "Build Number: ${BUILD_NUMBER}"
                 echo "Git Commit: ${GIT_COMMIT_SHORT}"
+                echo "Branch: ${BRANCH_NAME}"
             '''
         }
         
