@@ -24,14 +24,22 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 sh '''
-                    docker --version
-                    
-                    if [ -f frontend/Dockerfile ]; then
-                        docker build -t ${FRONTEND_IMAGE} frontend/
-                    fi
-                    
-                    if [ -f backend/Dockerfile ]; then
-                        docker build -t ${BACKEND_IMAGE} backend/
+                    if command -v docker >/dev/null 2>&1; then
+                        docker --version
+                        
+                        if [ -f frontend/Dockerfile ]; then
+                            docker build -t ${FRONTEND_IMAGE} frontend/
+                        fi
+                        
+                        if [ -f backend/Dockerfile ]; then
+                            docker build -t ${BACKEND_IMAGE} backend/
+                        fi
+                    else
+                        if [ -f /usr/local/bin/docker ]; then
+                            /usr/local/bin/docker --version
+                        else
+                            exit 1
+                        fi
                     fi
                 '''
             }
@@ -41,7 +49,11 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh '''
-                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        if command -v docker >/dev/null 2>&1; then
+                            echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        else
+                            exit 1
+                        fi
                     '''
                 }
             }
@@ -50,8 +62,12 @@ pipeline {
         stage('Push to Registry') {
             steps {
                 sh '''
-                    docker push ${FRONTEND_IMAGE}
-                    docker push ${BACKEND_IMAGE}
+                    if command -v docker >/dev/null 2>&1; then
+                        docker push ${FRONTEND_IMAGE}
+                        docker push ${BACKEND_IMAGE}
+                    else
+                        exit 1
+                    fi
                 '''
             }
         }
