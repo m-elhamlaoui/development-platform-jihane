@@ -26,5 +26,3 @@ spec:
               value: "dev_user"
             - name: SPRING_DATASOURCE_PASSWORD
               value: "dev_password"
-            - name: JWT_SECRET
-              value: "7185af6c19337c7d7a13857ab15a3e3aadf10d16e6df8f651e365afb67ce4809"
