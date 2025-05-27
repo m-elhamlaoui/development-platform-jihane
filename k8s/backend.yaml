@@ -17,7 +17,6 @@ spec:
       containers:
         - name: backend
           image: development-platform-jihane/backend:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 8090
           env:
@@ -28,4 +27,4 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: "dev_password"
             - name: JWT_SECRET
-              value: "mySecretKey123456789012345678901234567890"
+              value: "7185af6c19337c7d7a13857ab15a3e3aadf10d16e6df8f651e365afb67ce4809"

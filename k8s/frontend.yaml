@@ -17,7 +17,6 @@ spec:
       containers:
         - name: frontend
           image: development-platform-jihane/frontend:latest
-          imagePullPolicy: Never
           ports:
-            - containerPort: 80
+            - containerPort: 5173
 
