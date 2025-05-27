@@ -29,14 +29,13 @@ Belong-earth is a containerized web application that provides users with secure 
 | **Agency & Program Pages** | Organised profiles for NASA, SpaceX, ESA, ISRO, CNSA and more: fleet overview, historic missions, budgets and launch-cadence graphs. |
 | **Search & Filters** | Fuzzy search across rockets, payloads, agencies and astronauts. Combine filters (date range, orbit class, provider) for fast drill-down. |
 | **Responsive UI** | Tailored layouts for desktop, tablet and mobile. Dark-mode first, with automatic theming. |
-| **Secure Auth** | JWT-based Spring Security with role-based access (admin/editor/viewer). |
+
 
 ## Architecture
 
 ### Backend
 * Framework: Spring Boot 3.4.5 with Java 17  
 * Database: PostgreSQL with Spring Data JPA  
-* Security: Spring Security with JWT authentication  
 * External APIs: RestTemplate for The Space Devs API integration  
 
 ### Frontend
