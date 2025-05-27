@@ -37,6 +37,7 @@ Belong-earth is a containerized web application that provides users with secure 
 * Framework: Spring Boot 3.4.5 with Java 17  
 * Database: PostgreSQL with Spring Data JPA  
 * External APIs: RestTemplate for The Space Devs API integration  
+* Security: Spring Security
 
 ### Frontend
 * Framework: React 19.1.0 with TypeScript package.json:17-18  
