@@ -1,5 +1,5 @@
 
-# 🚀 Belong Earth – Space Launch Dashboard
+# 🚀 Beyong Earth – Space Launch Dashboard
 
 Real-time insights into humanity’s journey beyond Earth. **Belong Earth** aggregates data from public launch APIs and space-agency feeds to give you a beautiful, always-up-to-date dashboard of upcoming, live and historical rocket launches – plus deep dives into vehicles, missions, agencies and astronauts.
 A full-stack space exploration platform that enables user registration, authentication, and access to real-time space mission data through external APIs.
