@@ -6,6 +6,7 @@ pipeline {
         FRONTEND_IMAGE = "ismaimadani/beyondearth-frontend:${IMAGE_TAG}"
         BACKEND_IMAGE = "ismaimadani/beyondearth-backend:${IMAGE_TAG}"
         NAMESPACE = 'default'
+        PATH = "/usr/local/bin:${env.PATH}"
     }
     
     stages {
@@ -37,6 +38,14 @@ pipeline {
                     else
                         if [ -f /usr/local/bin/docker ]; then
                             /usr/local/bin/docker --version
+                            
+                            if [ -f frontend/Dockerfile ]; then
+                                /usr/local/bin/docker build -t ${FRONTEND_IMAGE} frontend/
+                            fi
+                            
+                            if [ -f backend/Dockerfile ]; then
+                                /usr/local/bin/docker build -t ${BACKEND_IMAGE} backend/
+                            fi
                         else
                             exit 1
                         fi
@@ -52,7 +61,11 @@ pipeline {
                         if command -v docker >/dev/null 2>&1; then
                             echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
                         else
-                            exit 1
+                            if [ -f /usr/local/bin/docker ]; then
+                                echo $DOCKER_PASSWORD | /usr/local/bin/docker login -u $DOCKER_USERNAME --password-stdin
+                            else
+                                exit 1
+                            fi
                         fi
                     '''
                 }
@@ -66,7 +79,12 @@ pipeline {
                         docker push ${FRONTEND_IMAGE}
                         docker push ${BACKEND_IMAGE}
                     else
-                        exit 1
+                        if [ -f /usr/local/bin/docker ]; then
+                            /usr/local/bin/docker push ${FRONTEND_IMAGE}
+                            /usr/local/bin/docker push ${BACKEND_IMAGE}
+                        else
+                            exit 1
+                        fi
                     fi
                 '''
             }
