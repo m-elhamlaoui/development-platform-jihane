@@ -30,7 +30,7 @@ Belong-earth is a containerized web application that provides users with secure 
 | **Search & Filters** | Fuzzy search across rockets, payloads, agencies and astronauts. Combine filters (date range, orbit class, provider) for fast drill-down. |
 | **Responsive UI** | Tailored layouts for desktop, tablet and mobile. Dark-mode first, with automatic theming. |
 | **Secure Auth** | JWT-based Spring Security with role-based access (admin/editor/viewer). |
-| **Admin Console** | Protected React panel for managing cached launch data, triggering manual syncs and adding custom content. |
+
 ## Architecture
 
 ### Backend
@@ -45,7 +45,7 @@ Belong-earth is a containerized web application that provides users with secure 
 * Styling: Tailwind CSS 4.1.3 package.json:22  
 * HTTP Client: Fetch for API communication package.json:14 
 ### Overall System Architecture
-> ![System Architecture](./desktop-view/ArchitectureAppli.png)
+> ![System Architecture](./desktop-view/archiapp.jpeg)
 
  
 
@@ -119,19 +119,6 @@ The application integrates with The Space Devs API (lldev.thespacedevs.com) to p
 ## 📦Deployment
 
 The application supports containerized deployment using Docker and Kubernetes configurations. 
-
-## 💻Development
-
-### Frontend Development Scripts
-
-- `npm run dev` - Start development server `package.json:7`  
-- `npm run build` - Build for production `package.json:8`  
-- `npm run lint` - Run ESLint `package.json:9`  
-
-### Backend Development
-
-The backend uses Maven wrapper for cross-platform compatibility and includes Spring Boot development tools for hot reloading.
-
 
 
 
@@ -209,7 +196,28 @@ You can watch the application demonstration video here:
 
 
 
+# ( Devops Overview)
 
 
+### Kubernetes Infrastructure
 
+The application runs on a Kubernetes cluster using Minikube for local development.
 
+[![Kubernetes orchestration](./desktop-view/kubernetes.png)
+
+To ensure full observability of our spatial application, we implemented a modern monitoring infrastructure based on Spring Boot Actuator, Prometheus and Grafana, enabling real-time monitoring of performance, service health and business metrics.
+
+[![Monitoring et Observability](./desktop-view/grafana.png)
+
+### CI/CD Pipeline
+
+Our Jenkins pipeline includes:
+
+1. **Environment Setup**
+2. **Chekout**
+3. **Build Docker Images**
+4. **Docker Login**
+5. **Push to Registry**
+6. **Post Actions**
+
+[![Jenkins Pipeline](./desktop-view/pipelineJenkins.png)
