@@ -161,7 +161,7 @@ const LaunchDetails: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Using the free API endpoint instead of the rate-limited one
+   
         const response = await fetch(`https://lldev.thespacedevs.com/2.2.0/launch/${id}/`);
         
         if (!response.ok) {
@@ -169,7 +169,7 @@ const LaunchDetails: React.FC = () => {
         }
         
         const data = await response.json();
-        console.log('Fetched launch details:', data); // Debug log
+        console.log('Fetched launch details:', data); 
         setLaunch(data);
       } catch (err) {
         console.error('Error fetching launch details:', err);
