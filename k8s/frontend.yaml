@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: development-platform-jihane/frontend:latest
+          image: ismaimadani/beyondearth-frontend:latest
           ports:
-            - containerPort: 5173
+            - containerPort: 80
 

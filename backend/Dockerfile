@@ -1,5 +1,4 @@
-# Étape  : Build avec Maven Wrapper
-FROM eclipse-temurin:21-jdk-alpine AS builder
+FROM eclipse-temurin:17-jdk-alpine AS builder
 
 WORKDIR /app
 
@@ -7,8 +6,8 @@ COPY . .
 
 RUN ./mvnw clean package -DskipTests
 
-# Étape  : Image exécutable
-FROM eclipse-temurin:21-jdk-alpine
+
+FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 

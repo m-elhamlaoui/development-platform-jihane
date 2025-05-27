@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: development-platform-jihane/backend:latest
+          image: ismaimadani/beyondearth-backend:latest
           ports:
             - containerPort: 8090
           env:
